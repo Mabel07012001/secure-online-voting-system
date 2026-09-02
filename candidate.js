@@ -54,3 +54,23 @@ function registerCandidate(event) {
 document
     .getElementById("registrationForm")
     .addEventListener("submit", registerCandidate);
+
+document.getElementById("photo").addEventListener("change", function () {
+    let photo = this.files[0];
+    let preview = document.getElementById("photoPreview");
+
+    if (!photo) {
+        preview.style.display = "none";
+        preview.removeAttribute("src");
+        return;
+    }
+
+    let reader = new FileReader();
+
+    reader.onload = function () {
+        preview.src = reader.result;
+        preview.style.display = "block";
+    };
+
+    reader.readAsDataURL(photo);
+});
