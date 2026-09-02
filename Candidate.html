@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidate Registration</title>
+    
+</head>
+<body>
+    <nav>
+        <div class="logo">Online Voting System</div>
+        <div class="nav-links">
+            <a href="home.html">Home</a>
+            <a href="manage_candidate.html">Manage Candidate</a>
+            <a href="cast_vote.html">Make a Vote</a>
+            <a href="dashboard.html">Dashboard</a>
+        </div>
+    </nav>
+    
+    <main>
+        <h2>Candidate Registration</h2>
+        <form id="registrationForm">
+            <div class="form-group">
+                <label for="Name">Full Name</label>
+                <input type="text" id="name" placeholder="Full Name" required minlength="2">
+                <span class="error-message" id="nameError">Name must be at least 2 characters</span>
+            </div>
+
+            <div class="form-group">
+                <label for="Age">Age</label>
+                <input type="number" id="age" placeholder="Age" required min="30" max="100">
+                <span class="error-message" id="ageError">Age must be between 30 and 100</span>
+            </div>
+
+            <div class="form-group">
+                <label for="Gender">Gender</label>
+                <select name="Gender" id="gender" required>
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+                <span class="error-message" id="genderError">Please select a gender</span>
+            </div>
+
+            <div class="form-group">
+                <label for="Party">Party</label>
+                <select id="party" required>
+                    <option value="">Select Party</option>
+                    <option value="PAIGC">PAIGC</option>
+                    <option value="PRS">PRS</option>
+                    <option value="MADEM G15">MADEM G15</option>
+                    <option value="APU">APU</option>
+                </select>
+                <span class="error-message" id="partyError">Please select a party</span>
+            </div>
+
+            <div class="form-group">
+                <label for="Position">Position</label>
+                <select name="Position" id="position" required>
+                    <option value="">Select Position</option>
+                    <option value="President">President</option>
+                    <option value="Vice President">Vice President</option>
+                    <option value="Secretary">Secretary</option>
+                </select>
+                <span class="error-message" id="positionError">Please select a position</span>
+            </div>
+
+            <div class="form-group">
+                <label for="Project">Project Description</label>
+                <textarea name="Project" id="project" placeholder="Project Description" required minlength="10"></textarea>
+                <span class="error-message" id="projectError">Project description must be at least 10 characters</span>
+            </div>
+
+            <div class="form-group">
+                <label for="Manifesto">Manifesto</label>
+                <textarea name="Manifesto" id="manifesto" placeholder="Manifesto" required minlength="20"></textarea>
+                <span class="error-message" id="manifestoError">Manifesto must be at least 20 characters</span>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" placeholder="Email Address" required>
+                <span class="error-message" id="emailError">Please enter a valid email</span>
+            </div>
+
+            <div class="form-group">
+                <label for="photo">Photo</label>
+                <input type="file" id="photo" accept="image/*" required>
+                <span class="error-message" id="photoError">Please select a photo</span>
+            </div>
+
+            <button type="submit">Register Candidate</button>
+            
+            <div class="success-message" id="successMessage">
+                ✅ Candidate registered successfully!
+            </div>
+        </form>
+    </main>
+
+    <script src="candidate.js"></script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Online System Voting</title>
+</head>
+<style>
+
+body{
+    background-image: url("WhatsApp Image 2026-05-07 at 13.18.57.jpeg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* NAVBAR */
+
+.navbar{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #111;
+    padding: 15px 30px;
+}
+
+.logo{
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.nav-links a{
+    color: white;
+    text-decoration: none;
+    margin-left: 15px;
+    font-size: 16px;
+}
+
+.nav-links a:hover{
+    color: #00aaff;
+}
+
+/* CONTAINER */
+
+.container{
+    width: 600px;
+    background-color: white;
+    margin: 50px auto;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+.container h1{
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.container p{
+    text-align: center;
+    color: #555;
+    line-height: 1.5;
+}
+
+/* FORM */
+
+form{
+    margin-top: 20px;
+}
+
+form input{
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 15px;
+    box-sizing: border-box;
+}
+
+form button{
+    width: 100%;
+    padding: 12px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+form button:hover{
+    background-color: #0056b3;
+}
+
+/* LOGIN LINK */
+
+.login-link{
+    text-align: center;
+    margin-top: 20px;
+}
+
+.login-link a{
+    text-decoration: none;
+    color: #007bff;
+}
+
+.login-link a:hover{
+    text-decoration: underline;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 500px){
+
+    .container{
+        width: 90%;
+        padding: 20px;
+    }
+
+    .navbar{
+        flex-direction: column;
+        gap: 10px;
+    }
+
+}
+</style>
+<body>
+    <div class="navbar">
+        <div class="logo">Online Voting System</div>
+        <div class="nav-links">
+            <a href="home.html">Home</a>
+            <a href="login.html">Login</a>
+            <a href="about.html">About</a>
+        </div>   
+    </div>
+    <div class="container">
+        <h1>Register for Online Voting System</h1>
+        <p>Join our secure online voting platform to participate in elections from the comfort of your home. Our system ensures the integrity and confidentiality of your vote through advanced encryption and OTP authentication.</p>
+ <form id="registerForm">
+    <input type="text" id="username" placeholder="Full Name" required><br><br>
+
+    <input type="email" id="email" placeholder="Email Address" required><br><br>
+
+    <input type="password" id="password" placeholder="Password" required><br><br>
+
+    <input type="password" id="confirmPassword" placeholder="Confirm Password" required><br><br>
+
+    <button type="submit">Register</button>
+  </form>
+           <div class="login-link">
+            <p>Already have an account? 
+            <a href="login.html">Login here</a>.</p>
+           </div>
+    </div>
+    <script src="register.js"></script>
+</body>
+</html>

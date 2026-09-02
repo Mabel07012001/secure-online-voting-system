@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage_Candidates</title>
+</head>
+<body>
+    <nav>
+        <div class="logo">Online Voting System</div>
+        <div class="nav-links">
+            <a href="home.html">Home</a>
+            <a href="candidate.html">Candidate</a>
+            <a href="cast_vote.html">Make a Vote</a>
+            <a href="dashboard.html">Dashboard</a>
+        </div>
+    </nav>
+    <h1>Manage Candidates</h1>
+    <input type="text" id="searchInput" placeholder="Search candidates...">
+
+    <table border="4">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Party</th>
+                <th>Position</th>
+                <th>Email</th>
+                <th>Votes</th>
+                <th>Photos</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        
+
+        
+        <tbody id="candidatesTableBody">
+            <!-- Candidate rows will be populated by JavaScript -->
+        </tbody>
+
+    </table>
+    <script src="manage_candidate.js"></script>
+</body>
+</html>
