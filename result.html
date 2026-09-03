@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Election Results</title>
+
+    <link rel="stylesheet" href="results.css">
+
+</head>
+
+
+<body>
+
+    <nav>
+
+        <div class="logo">
+            Online Voting System
+        </div>
+
+
+        <div class="nav-links">
+
+            <a href="home.html">
+                Home
+            </a>
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            <a href="results.html">
+                Results
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <main>
+
+        <h1>Election Results</h1>
+
+        <h2>
+            Online Presidential Election
+        </h2>
+
+
+        <div class="summary">
+
+            <div class="summary-card">
+
+                <h3>
+                    Total Candidates
+                </h3>
+
+                <p id="totalCandidates">
+                    0
+                </p>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <h3>
+                    Total Votes
+                </h3>
+
+                <p id="totalVotes">
+                    0
+                </p>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <h3>
+                    Leading Candidate
+                </h3>
+
+                <p id="leadingCandidate">
+                    No votes yet
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Position</th>
+
+                        <th>Candidate</th>
+
+                        <th>Party</th>
+
+                        <th>Votes</th>
+
+                        <th>Percentage</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="resultsBody">
+
+                    <!-- Results appear here -->
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <a href="dashboard.html">
+
+            <button>
+                Back to Dashboard
+            </button>
+
+        </a>
+
+
+    </main>
+
+
+    <script src="results.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Voter Dashboard</title>
+
+</head>
+
+<body>
+
+    <h1>Voter Dashboard</h1>
+
+
+    <h2>
+        Welcome,
+        <span id="voterName"></span>
+    </h2>
+
+
+    <div>
+
+        <h3>Voting Status</h3>
+
+        <p id="votingStatus">
+            Not Voted
+        </p>
+
+    </div>
+
+
+    <div>
+
+        <h3>Available Election</h3>
+
+        <p>Online Presidential Election</p>
+
+    </div>
+
+
+    <div>
+
+        <h3>Total Registered Voters</h3>
+
+        <p id="totalVoters">0</p>
+
+    </div>
+
+
+    <div>
+
+        <h3>Total Candidates</h3>
+
+        <p id="totalCandidates">0</p>
+
+    </div>
+
+
+    <br>
+
+
+    <a href="cast_vote.html">
+
+        <button>
+            Vote Now
+        </button>
+
+    </a>
+
+
+    <a href="manage_candidate.html">
+
+        <button>
+            View Candidates
+        </button>
+
+    </a>
+
+
+    <br><br>
+
+
+    <button onclick="logout()">
+
+        Logout
+
+    </button>
+
+
+    <script src="dashboard.js"></script>
+
+</body>
+
+</html>
