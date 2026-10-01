@@ -1,97 +1,86 @@
-function register(event) {
+import { apiRegister, apiSendOTP } from "./api.js";
 
-    event.preventDefault();
+const registerForm = document.getElementById("registerForm");
 
-    let username = document.getElementById("username").value.trim();
-    let email = document.getElementById("email").value.trim();
-    let password = document.getElementById("password").value;
-    let confirmPassword =
-        document.getElementById("confirmPassword").value;
+if (registerForm) {
+    registerForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
 
+        const username = document.getElementById("username").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
+        const confirmPassword = document.getElementById("confirmPassword").value;
+        const birthdate = document.getElementById("birthdate").value;
+        const registerButton = document.getElementById("registerButton");
 
-    if (username === "" || email === "" ||
-        password === "" || confirmPassword === "") {
+        if (!username || !email || !password || !confirmPassword || !birthdate) {
+            alert("Please fill in all fields.");
+            return;
+        }
 
-        alert("Please fill in all fields.");
-        return;
-    }
+        if (password !== confirmPassword) {
+            alert("Passwords do not match.");
+            return;
+        }
 
+        if (password.length < 6) {
+            alert("Password must be at least 6 characters.");
+            return;
+        }
 
-    if (password !== confirmPassword) {
+        const birthDate = new Date(birthdate);
+        const today = new Date();
 
-        alert("Passwords do not match.");
-        return;
-    }
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
 
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
 
-    // Get all registered voters
-    let voters =
-        JSON.parse(localStorage.getItem("voters")) || [];
+        if (age < 18) {
+            alert("❌ You must be at least 18 years old to register.");
+            return;
+        }
 
+        if (age > 120) {
+            alert("❌ Invalid date of birth.");
+            return;
+        }
 
-    // Check if email already exists
-    let existingVoter =
-        voters.find(voter => voter.email === email);
+        registerButton.disabled = true;
+        registerButton.textContent = "Registering...";
 
+        try {
+            const result = await apiRegister(username, email, password);
 
-    if (existingVoter) {
+            if (!result.success) {
+                alert("Registration failed: " + result.message);
+                registerButton.disabled = false;
+                registerButton.textContent = "Register";
+                return;
+            }
 
-        alert("This email is already registered.");
-        return;
-    }
+            const otpResult = await apiSendOTP(email);
 
+            if (!otpResult.success) {
+                alert("Account created, but OTP was not sent: " + otpResult.message);
+                registerButton.disabled = false;
+                registerButton.textContent = "Register";
+                return;
+            }
 
-    // Generate OTP
-    let otp =
-        Math.floor(100000 + Math.random() * 900000);
+            sessionStorage.setItem("pendingEmail", email);
+            sessionStorage.setItem("pendingUsername", username);
 
+            alert("✅ Registration successful! Check your email for the OTP code.");
+            window.location.href = "OTP.html";
 
-    alert("Your OTP is: " + otp);
-
-
-    let userOtp =
-        prompt("Please enter the OTP sent to your email:");
-
-
-    if (userOtp == otp) {
-
-        // Create voter object
-        let voter = {
-
-            name: username,
-            email: email,
-            password: password,
-            hasVoted: false
-
-        };
-
-
-        // Add voter
-        voters.push(voter);
-
-
-        // Save all voters
-        localStorage.setItem(
-            "voters",
-            JSON.stringify(voters)
-        );
-
-
-        alert("Registration successful!");
-
-
-        // Go to login
-        window.location.href = "login.html";
-
-    } else {
-
-        alert("Invalid OTP. Registration failed.");
-
-    }
-
+        } catch (error) {
+            console.error("Registration error:", error);
+            alert("Could not connect to server. Is the backend running?");
+            registerButton.disabled = false;
+            registerButton.textContent = "Register";
+        }
+    });
 }
-
-
-document
-    .getElementById("registerForm")
-    .addEventListener("submit", register);

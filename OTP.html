@@ -3,24 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OTP Verification</title>
+    <title>OTP Verification — Online Voting System</title>
+    <link rel="stylesheet" href="otp.css">
 </head>
+
 <body>
-    <div class="container">
-        <h1>OTP Verification</h1>
-        <p>Please enter the OTP sent to your email address to verify your account and complete the registration process.</p>
-        <form>
-            <input type="text" placeholder="Enter OTP" required><br><br>
-            <button type="submit">Verify OTP</button>
-        </form>
+
+    <nav class="navbar">
+        <div class="logo">Online Voting System</div>
+        <div class="nav-links">
+            <a href="home.html">Home</a>
+            <a href="login.html">Login</a>
+            <a href="Register.html">Register</a>
+        </div>
+    </nav>
+
+    <div class="otp-wrapper">
+        <div class="otp-card">
+
+            <div class="otp-icon">📧</div>
+
+            <h1>Verificação OTP</h1>
+            <p class="otp-subtitle">
+                Enviámos um código de 6 dígitos para o seu email.
+                Verifique a caixa de entrada e a pasta de spam.
+            </p>
+
+            <form id="otpForm">
+
+                <input type="text" id="otp" class="otp-input"
+                       placeholder="000000" maxlength="6"
+                       inputmode="numeric" autocomplete="one-time-code" required>
+
+                <button type="submit" id="verifyButton" class="otp-btn">
+                    Verify OTP
+                </button>
+
+            </form>
+
+            <p id="otpMessage" class="otp-message"></p>
+
+            <div class="otp-footer">
+                <a href="#" id="resendOtp">Resend OTP</a>
+                <span>•</span>
+                <a href="login.html">Back to Login</a>
+            </div>
+
+        </div>
     </div>
 
-    <div class="Resend">
-        <p>
-            <a href="forgot-password.html">
-                Resend OTP
-            </a>
-        </p>
-    </div>
+    <script type="module" src="OTP.js"></script>
+
 </body>
 </html>

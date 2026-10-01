@@ -1,109 +1,48 @@
-let candidates =
-    JSON.parse(
-        localStorage.getItem("candidates")
-    ) || [];
+import { apiGetResults } from "./api.js";
 
+const resultsBody = document.getElementById("resultsBody");
+const totalCandidatesElement = document.getElementById("totalCandidates");
+const totalVotesElement = document.getElementById("totalVotes");
+const leadingCandidateElement = document.getElementById("leadingCandidate");
 
-let resultsBody =
-    document.getElementById("resultsBody");
+async function loadResults() {
+    try {
+        const data = await apiGetResults();
 
+        if (!data.success) {
+            resultsBody.innerHTML = `<tr><td colspan="5">Error loading results.</td></tr>`;
+            return;
+        }
 
-// Total candidates
+        totalCandidatesElement.textContent = data.totalCandidates;
+        totalVotesElement.textContent = data.totalVotes;
 
-document.getElementById(
-    "totalCandidates"
-).textContent = candidates.length;
+        if (data.leadingCandidate && data.leadingCandidate.votes > 0) {
+            leadingCandidateElement.textContent = data.leadingCandidate.name;
+        } else {
+            leadingCandidateElement.textContent = "No votes yet";
+        }
 
+        resultsBody.innerHTML = "";
 
-// Calculate total votes
+        data.results.forEach((candidate, index) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${candidate.name}</td>
+                <td>${candidate.party || "N/A"}</td>
+                <td>${candidate.votes}</td>
+                <td>${candidate.percentage}</td>
+            `;
+            resultsBody.appendChild(row);
+        });
 
-let totalVotes = candidates.reduce(
-    function(total, candidate) {
-
-        return total + candidate.votes;
-
-    },
-    0
-);
-
-
-document.getElementById(
-    "totalVotes"
-).textContent = totalVotes;
-
-
-// Sort candidates by votes
-
-candidates.sort(function(a, b) {
-
-    return b.votes - a.votes;
-
-});
-
-
-// Leading candidate
-
-if (candidates.length > 0 &&
-    totalVotes > 0) {
-
-    document.getElementById(
-        "leadingCandidate"
-    ).textContent =
-
-        candidates[0].name;
-
+    } catch (error) {
+        console.error("Error:", error);
+        resultsBody.innerHTML = `<tr><td colspan="5">Backend is not running.</td></tr>`;
+    }
 }
 
-
-// Display results
-
-candidates.forEach(function(candidate) {
-
-    let percentage = 0;
-
-
-    if (totalVotes > 0) {
-
-        percentage =
-
-            (
-                candidate.votes /
-                totalVotes
-            ) * 100;
-
-    }
-
-
-    resultsBody.innerHTML += `
-
-        <tr>
-
-            <td>
-                ${candidate.position}
-            </td>
-
-
-            <td>
-                ${candidate.name}
-            </td>
-
-
-            <td>
-                ${candidate.party}
-            </td>
-
-
-            <td>
-                ${candidate.votes}
-            </td>
-
-
-            <td>
-                ${percentage.toFixed(2)}%
-            </td>
-
-        </tr>
-
-    `;
-
-});
+if (resultsBody) {
+    loadResults();
+}

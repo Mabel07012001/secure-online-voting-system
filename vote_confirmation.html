@@ -1,65 +1,228 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vote Confirmation Design and Implementation of a Secure Online Voting System Using OTP Authentication</title>
 
-    <title>Vote Confirmation</title>
+    <style>
+        .confirmation-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 75vh;
+            padding: 40px 20px;
+        }
 
-    <link rel="stylesheet" href="vote_confirmation.css">
+        .confirmation-card {
+            background: white;
+            max-width: 550px;
+            width: 100%;
+            padding: 50px 40px;
+            text-align: center;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(15, 23, 42, 0.15);
+            animation: slideUp 0.5s ease;
+            border: 1px solid #e2e8f0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .confirmation-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #16a34a, #22c55e, #16a34a);
+        }
+
+        .success-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 25px;
+            background: #dcfce7;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 55px;
+            color: #16a34a;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .confirmation-card h1 {
+            font-size: 28px;
+            color: #0f172a;
+            margin-bottom: 10px;
+        }
+
+        .confirmation-card > p {
+            color: #64748b;
+            font-size: 15px;
+            margin-bottom: 30px;
+        }
+
+        .confirmation-id {
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            border: 2px dashed #2563eb;
+            padding: 25px;
+            border-radius: 14px;
+            margin: 25px 0;
+        }
+
+        .confirmation-id .label {
+            font-size: 12px;
+            color: #1d4ed8;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .confirmation-id .value {
+            font-size: 26px;
+            font-weight: 800;
+            color: #1e40af;
+            letter-spacing: 3px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .confirmation-id .note {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 10px;
+            line-height: 1.5;
+        }
+
+        .vote-details {
+            text-align: left;
+            background: #f8fafc;
+            padding: 22px;
+            border-radius: 12px;
+            margin: 25px 0;
+        }
+
+        .vote-details h2 {
+            font-size: 13px;
+            color: #334155;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .vote-details p {
+            font-size: 14px;
+            color: #334155;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .vote-details p:last-child {
+            border-bottom: none;
+        }
+
+        .vote-details p span:last-child {
+            color: #0f172a;
+            font-weight: 600;
+        }
+
+        .confirmation-card .btn {
+            padding: 14px 32px;
+            font-size: 15px;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 
 <body>
 
-    <div class="confirmation-container">
+    <nav class="navbar">
 
-        <div class="success-icon">
-            ✓
+        <div class="logo">
+            Online Voting System
         </div>
 
-        <h1>Vote Successful!</h1>
-
-        <p class="success-message">
-            Your vote has been recorded successfully.
-        </p>
-
-
-        <div class="vote-details">
-
-            <h2>Vote Details</h2>
-
-            <p>
-                <strong>Candidate:</strong>
-                <span id="candidateName"></span>
-            </p>
-
-            <p>
-                <strong>Election:</strong>
-                Online Presidential Election
-            </p>
-
-            <p>
-                <strong>Date & Time:</strong>
-                <span id="voteDate"></span>
-            </p>
-
+        <div class="nav-links">
+            <a href="home.html">Home</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="result.html">Results</a>
         </div>
 
+    </nav>
 
-        <a href="dashboard.html">
+    <div class="confirmation-wrapper">
 
-            <button>
-                Back to Dashboard
-            </button>
+        <div class="confirmation-card">
 
-        </a>
+            <div class="success-icon">
+                ✓
+            </div>
+
+            <h1>Vote Recorded!</h1>
+
+            <p>
+                Your vote has been recorded successfully.
+            </p>
+
+            <div class="confirmation-id">
+
+                <div class="label">
+                    Confirmation ID
+                </div>
+
+                <div class="value" id="confirmationId">
+                    SV-XXXX-XXXXX
+                </div>
+
+                <div class="note">
+                    🔒 Keep this code. It confirms your vote without revealing your choice.
+                </div>
+
+            </div>
+
+            <div class="vote-details">
+
+                <h2>
+                    Vote Details
+                </h2>
+
+                <p>
+                    <span>Candidate:</span>
+                    <span id="candidateName">—</span>
+                </p>
+
+                <p>
+                    <span>Party:</span>
+                    <span id="candidateParty">—</span>
+                </p>
+
+                <p>
+                    <span>Election:</span>
+                    <span>Presidential Election</span>
+                </p>
+
+                <p>
+                    <span>Date:</span>
+                    <span id="voteDate">—</span>
+                </p>
+
+            </div>
+
+            <a href="dashboard.html" class="btn">
+                ← Back to Dashboard
+            </a>
+
+        </div>
 
     </div>
-
 
     <script src="vote_confirmation.js"></script>
 
 </body>
-
 </html>

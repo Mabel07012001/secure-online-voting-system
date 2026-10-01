@@ -1,101 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Login Online Voting System</title>
+    <title>Voter Login Design and Implementation of a Secure Online Voting System Using OTP Authentication</title>
+    <link rel="stylesheet" href="login.css">
 </head>
 
-<body>
+<body class="auth-page">
 
-    <div class="navbar">
+    <nav class="navbar">
 
-        <div class="logo">
-            Online Voting System
-        </div>
+        <div class="logo">Online Voting System</div>
 
         <div class="nav-links">
             <a href="home.html">Home</a>
             <a href="about.html">About</a>
-            <a href="login.html">Login</a>
-            <a href="register.html">Register</a>
+            <a href="login.html" class="active">Login</a>
+            <a href="Register.html">Register</a>
         </div>
 
-    </div>
+    </nav>
 
+    <div class="auth-container">
 
-    <div class="container">
+        <div class="auth-header">
 
-        <h1>Login to Your Account</h1>
+            <div class="auth-icon">🔐</div>
 
-        <p>
-            Welcome back! Please enter your credentials
-            to access your account and participate in
-            the voting process.
-        </p>
+            <h1 class="auth-title">Welcome Back</h1>
 
+            <p class="auth-subtitle">
+                Log in to access the voting system.
+            </p>
 
-        <!-- LOGIN FORM -->
+        </div>
 
-        <form id="loginForm">
+        <form id="loginForm" class="auth-form">
 
-            <input
-                type="email"
-                id="email"
-                placeholder="Email Address"
-                required
-            >
+            <div class="form-group">
 
-            <br><br>
+                <label class="form-label" for="email">
+                    Email
+                </label>
 
+                <input
+                    type="email"
+                    id="email"
+                    class="form-input"
+                    placeholder="your@email.com"
+                    required>
 
-            <input
-                type="password"
-                id="password"
-                placeholder="Password"
-                required
-            >
+            </div>
 
-            <br><br>
+            <div class="form-group">
 
+                <label class="form-label" for="password">
+                    Password
+                </label>
 
-            <button type="submit">
+                <input
+                    type="password"
+                    id="password"
+                    class="form-input"
+                    placeholder="Enter your password"
+                    required>
+
+            </div>
+
+            <button type="submit" class="auth-btn">
                 Login
             </button>
 
-
-            <p>
+            <div class="auth-footer">
 
                 <a href="forgot-password.html">
-
                     Forgot Password?
-
                 </a>
 
-            </p>
-
-
-            <p>
+                <br><br>
 
                 Don't have an account?
-
-                <a href="register.html">
-
+                <a href="Register.html">
                     Register here
-
                 </a>
 
-            </p>
+            </div>
 
         </form>
 
     </div>
 
-
-    <script src="login.js"></script>
+    <script type="module" src="login.js"></script>
 
 </body>
-
 </html>

@@ -1,71 +1,52 @@
-function login(event) {
+import { apiLogin } from "./api.js";
 
+async function login(event) {
     event.preventDefault();
 
+    const email = document.getElementById("email").value.trim().toLowerCase();
+    const password = document.getElementById("password").value;
 
-    // Get values from login form
+    if (!email || !password) {
+        alert("Please enter your email and password.");
+        return;
+    }
 
-    let email =
-        document.getElementById("email").value.trim();
+    console.log("Attempting login with:", email);
 
-    let password =
-        document.getElementById("password").value;
+    try {
+        const result = await apiLogin(email, password);
+        console.log("Backend response:", result);
 
+        if (!result.success) {
+            alert(result.message || "Invalid email or password.");
+            return;
+        }
 
-    // Get registered voters
+        if (!result.voter) {
+            console.error("Backend did not return voter.");
 
-    let voters =
-        JSON.parse(localStorage.getItem("voters")) || [];
-
-
-    // Find voter
-
-    let voter =
-        voters.find(function(user) {
-
-            return (
-                user.email === email &&
-                user.password === password
+            alert(
+                "⚠️ Error: Your voter profile does not exist.\n\n" +
+                "Contact the administrator or register again."
             );
+            return;
+        }
 
-        });
+        localStorage.setItem("loggedInVoter", JSON.stringify(result.voter));
+        localStorage.setItem("authToken", result.token || "");
 
-
-    // Check if voter exists
-
-    if (voter) {
-
-        // Save currently logged-in voter
-
-        localStorage.setItem(
-            "loggedInVoter",
-            JSON.stringify(voter)
-        );
-
+        console.log("Login OK. Voter saved:", result.voter);
 
         alert("Login successful!");
+        window.location.href = "dashboard.html";
 
-
-        // Go to dashboard
-
-        window.location.href =
-            "dashboard.html";
-
+    } catch (error) {
+        console.error("Login error:", error);
+        alert("Could not connect to server. Is the backend running?");
     }
-
-    else {
-
-        alert(
-            "Invalid email or password. Please register first."
-        );
-
-    }
-
 }
 
-
-// Listen for form submission
-
-document
-    .getElementById("loginForm")
-    .addEventListener("submit", login);
+const loginForm = document.getElementById("loginForm");
+if (loginForm) {
+    loginForm.addEventListener("submit", login);
+}

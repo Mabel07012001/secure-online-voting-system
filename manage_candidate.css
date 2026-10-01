@@ -1,0 +1,499 @@
+```css
+/* =====================================================
+   ONLINE VOTING SYSTEM
+   MANAGE CANDIDATES
+===================================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --primary-light: #eff6ff;
+
+    --secondary: #0f172a;
+    --background: #eef2f7;
+
+    --white: #ffffff;
+    --text: #0f172a;
+    --text-light: #64748b;
+
+    --border: #d7dee8;
+
+    --success: #16a34a;
+    --danger: #dc2626;
+
+    --shadow: 0 8px 24px rgba(15, 23, 42, 0.10);
+    --radius: 12px;
+}
+
+/* =========================
+   BODY
+========================= */
+
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: var(--background);
+    color: var(--text);
+    min-height: 100vh;
+}
+
+/* =========================
+   NAVIGATION
+========================= */
+
+nav {
+    min-height: 72px;
+    background: #0f172a;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 0 7%;
+
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.20);
+}
+
+/* Logo */
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    color: #ffffff;
+
+    font-size: 21px;
+    font-weight: 700;
+}
+
+.logo::before {
+    content: "🗳️";
+
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: #2563eb;
+
+    border-radius: 10px;
+
+    font-size: 18px;
+}
+
+/* Navigation links */
+
+.nav-links {
+    display: flex;
+    gap: 7px;
+}
+
+.nav-links a {
+    color: #cbd5e1;
+
+    text-decoration: none;
+
+    padding: 10px 15px;
+
+    border-radius: 7px;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    transition: 0.25s ease;
+}
+
+.nav-links a:hover {
+    color: #ffffff;
+    background: #1e293b;
+}
+
+/* Active Candidate link */
+
+.nav-links a:nth-child(2) {
+    background: #2563eb;
+    color: #ffffff;
+}
+
+/* =========================
+   PAGE TITLE
+========================= */
+
+body > h1 {
+    width: 90%;
+    max-width: 1250px;
+
+    margin: 45px auto 25px;
+
+    font-size: 32px;
+    font-weight: 700;
+
+    color: #0f172a;
+}
+
+body > h1::after {
+    content: "";
+
+    display: block;
+
+    width: 55px;
+    height: 4px;
+
+    background: #2563eb;
+
+    border-radius: 5px;
+
+    margin-top: 12px;
+}
+
+/* =========================
+   SEARCH
+========================= */
+
+#searchInput {
+    display: block;
+
+    width: 90%;
+    max-width: 1250px;
+
+    margin: 0 auto 25px;
+
+    padding: 14px 17px;
+
+    border: 1px solid #cbd5e1;
+
+    border-radius: 9px;
+
+    background: #ffffff;
+
+    font-size: 14px;
+
+    color: #0f172a;
+
+    outline: none;
+
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.07);
+
+    transition: 0.25s ease;
+}
+
+#searchInput::placeholder {
+    color: #94a3b8;
+}
+
+#searchInput:focus {
+    border-color: #2563eb;
+
+    box-shadow: 0 0 0 4px #dbeafe;
+}
+
+/* =========================
+   TABLE
+========================= */
+
+table {
+    width: 90%;
+    max-width: 1250px;
+
+    margin: 0 auto 60px;
+
+    background: #ffffff;
+
+    border-collapse: separate;
+    border-spacing: 0;
+
+    border: 1px solid #d7dee8;
+
+    border-radius: 12px;
+
+    overflow: hidden;
+
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.10);
+
+    font-size: 14px;
+}
+
+/* =========================
+   TABLE HEADER
+========================= */
+
+thead {
+    background: #eaf0f7;
+}
+
+th {
+    padding: 16px 14px;
+
+    text-align: left;
+
+    color: #334155;
+
+    font-size: 12px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.5px;
+
+    font-weight: 700;
+
+    border-bottom: 2px solid #d7dee8;
+
+    white-space: nowrap;
+}
+
+/* =========================
+   TABLE BODY
+========================= */
+
+td {
+    padding: 15px 14px;
+
+    border-bottom: 1px solid #e2e8f0;
+
+    color: #334155;
+
+    vertical-align: middle;
+
+    background: #ffffff;
+}
+
+tbody tr {
+    transition: 0.2s ease;
+}
+
+tbody tr:hover td {
+    background: #f5f9ff;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* =========================
+   CANDIDATE PHOTO
+========================= */
+
+td img {
+    width: 65px;
+    height: 65px;
+
+    object-fit: cover;
+
+    object-position: center top;
+
+    border-radius: 50%;
+
+    border: 3px solid #ffffff;
+
+    outline: 3px solid #2563eb;
+
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.18);
+
+    display: block;
+
+    background: #e2e8f0;
+}
+
+/* =========================
+   VOTES
+========================= */
+
+td:nth-child(7) {
+    font-weight: 700;
+
+    color: #2563eb;
+}
+
+/* =========================
+   ACTIONS
+========================= */
+
+td:last-child {
+    white-space: nowrap;
+}
+
+td button {
+    border: none;
+
+    padding: 9px 13px;
+
+    border-radius: 7px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    margin-right: 5px;
+
+    transition: 0.2s ease;
+}
+
+/* Edit */
+
+td button:first-child {
+    background: #dbeafe;
+
+    color: #1d4ed8;
+}
+
+td button:first-child:hover {
+    background: #2563eb;
+
+    color: #ffffff;
+}
+
+/* Delete */
+
+td button:last-child {
+    background: #fee2e2;
+
+    color: #dc2626;
+}
+
+td button:last-child:hover {
+    background: #dc2626;
+
+    color: #ffffff;
+}
+
+/* =========================
+   EMPTY TABLE
+========================= */
+
+#candidatesTableBody:empty::after {
+    content: "No candidates found.";
+
+    display: block;
+
+    text-align: center;
+
+    padding: 40px;
+
+    color: #64748b;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1000px) {
+
+    nav {
+        padding: 0 4%;
+    }
+
+    body > h1,
+    #searchInput,
+    table {
+        width: 94%;
+    }
+
+    table {
+        display: block;
+
+        overflow-x: auto;
+
+        white-space: nowrap;
+    }
+}
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 700px) {
+
+    nav {
+        height: auto;
+
+        padding: 18px;
+
+        flex-direction: column;
+
+        gap: 15px;
+    }
+
+    .nav-links {
+        flex-wrap: wrap;
+
+        justify-content: center;
+    }
+
+    body > h1 {
+        font-size: 26px;
+
+        margin-top: 30px;
+    }
+
+    #searchInput {
+        padding: 12px 14px;
+    }
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 480px) {
+
+    nav {
+        padding: 16px;
+    }
+
+    .logo {
+        font-size: 18px;
+    }
+
+    .nav-links {
+        width: 100%;
+
+        flex-direction: column;
+
+        gap: 4px;
+    }
+
+    .nav-links a {
+        width: 100%;
+
+        text-align: center;
+    }
+
+    body > h1 {
+        width: 92%;
+
+        font-size: 23px;
+
+        margin-top: 25px;
+    }
+
+    #searchInput {
+        width: 92%;
+    }
+
+    table {
+        width: 92%;
+
+        font-size: 13px;
+    }
+
+    th,
+    td {
+        padding: 12px 10px;
+    }
+
+    td img {
+        width: 60px;
+        height: 60px;
+    }
+}
+```

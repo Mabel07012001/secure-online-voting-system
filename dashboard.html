@@ -1,99 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <title>Voter Dashboard</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voter Dashboard Design and Implementation of a Secure Online Voting System Using OTP Authentication</title>
+    <link rel="stylesheet" href="dashboard.css">
 </head>
-
 <body>
 
-    <h1>Voter Dashboard</h1>
+    <nav class="navbar">
+        <div class="logo">Online Voting System</div>
+        <div class="nav-links">
+            <a href="home.html">Home</a>
+            <a href="dashboard.html" class="active">Dashboard</a>
+            <a href="cast_vote.html">Vote</a>
+            <a href="manage_candidate.html">Candidates</a>
+            <a href="result.html">Results</a>
+            <a href="admin_login.html">Admin</a>
+        </div>
+    </nav>
 
-
-    <h2>
-        Welcome,
-        <span id="voterName"></span>
-    </h2>
-
-
-    <div>
-
-        <h3>Voting Status</h3>
-
-        <p id="votingStatus">
-            Not Voted
+    <div class="page-header">
+        <h1 class="page-title">Voter Dashboard</h1>
+        <p class="page-subtitle">
+            Bem-vindo, <strong id="voterName">...</strong>
         </p>
-
     </div>
 
+    <main>
 
-    <div>
+        <div class="stat-grid">
 
-        <h3>Available Election</h3>
+            <div class="stat-card">
+                <div class="stat-icon">🗳️</div>
+                <div>
+                    <div class="stat-label">Voting Status</div>
+                    <div class="stat-value" id="votingStatus" style="font-size: 16px;">Loading...</div>
+                </div>
+            </div>
 
-        <p>Online Presidential Election</p>
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div>
+                    <div class="stat-label">Total Voters</div>
+                    <div class="stat-value" id="totalVoters">0</div>
+                </div>
+            </div>
 
-    </div>
+            <div class="stat-card">
+                <div class="stat-icon">🧑‍💼</div>
+                <div>
+                    <div class="stat-label">Total Candidates</div>
+                    <div class="stat-value" id="totalCandidates">0</div>
+                </div>
+            </div>
 
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div>
+                    <div class="stat-label">Election Status</div>
+                    <div class="stat-value" id="electionStatus" style="font-size: 16px;">Loading...</div>
+                </div>
+            </div>
 
-    <div>
+        </div>
 
-        <h3>Total Registered Voters</h3>
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- SE JÁ VOTOU — Mostra em quem votou         -->
+        <!-- ═══════════════════════════════════════════ -->
+        <div id="myVoteSection" style="display: none; margin-top: 30px;">
+            <div class="card" style="padding: 30px;">
+                <div class="card-header">
+                    <h2 class="card-title">✅ O Seu Voto</h2>
+                    <p class="card-subtitle">Confirmação do voto registado</p>
+                </div>
 
-        <p id="totalVoters">0</p>
+                <div id="myVoteInfo" style="display: flex; align-items: center; gap: 20px; padding: 20px; background: #eff6ff; border-radius: 12px; border-left: 4px solid #2563eb; flex-wrap: wrap;">
+                    <!-- preenchido pelo JS -->
+                </div>
+            </div>
+        </div>
 
-    </div>
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- CANDIDATO LÍDER                             -->
+        <!-- ═══════════════════════════════════════════ -->
+        <div id="leadingSection" style="margin-top: 30px;">
+            <div class="card" style="padding: 30px;">
+                <div class="card-header">
+                    <h2 class="card-title">🏆 Candidato Líder</h2>
+                    <p class="card-subtitle">Resultados parciais em tempo real</p>
+                </div>
+                <div id="leadingInfo" style="padding: 20px; background: #dcfce7; border-radius: 12px; border-left: 4px solid #16a34a;">
+                    Carregando...
+                </div>
+            </div>
+        </div>
 
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- BOTÕES                                      -->
+        <!-- ═══════════════════════════════════════════ -->
+        <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 30px;">
+            <a href="cast_vote.html" class="btn" id="voteBtn">Vote Now →</a>
+            <a href="result.html" class="btn" style="background: white; color: #2563eb; border: 2px solid #2563eb; box-shadow: none;">
+                View Results
+            </a>
+        </div>
 
-    <div>
+        <div style="text-align: center; margin-top: 30px;">
+            <button id="logoutButton" style="background: #dc2626; color: white; padding: 12px 30px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                Logout
+            </button>
+        </div>
 
-        <h3>Total Candidates</h3>
+    </main>
 
-        <p id="totalCandidates">0</p>
-
-    </div>
-
-
-    <br>
-
-
-    <a href="cast_vote.html">
-
-        <button>
-            Vote Now
-        </button>
-
-    </a>
-
-
-    <a href="manage_candidate.html">
-
-        <button>
-            View Candidates
-        </button>
-
-    </a>
-
-
-    <br><br>
-
-
-    <button onclick="logout()">
-
-        Logout
-
-    </button>
-
-
-    <script src="dashboard.js"></script>
+    <script type="module" src="dashboard.js"></script>
 
 </body>
-
 </html>

@@ -1,24 +1,30 @@
-let votedCandidate =
-    JSON.parse(
-        localStorage.getItem("votedCandidate")
-    );
+const data = sessionStorage.getItem("voteConfirmation");
 
+if (!data) {
+    window.location.href = "dashboard.html";
+} else {
+    const vote = JSON.parse(data);
 
-let voteDate =
-    localStorage.getItem("voteDate");
+    document.getElementById("confirmationId").textContent = vote.confirmation_id;
 
+    if (vote.candidate) {
+        document.getElementById("candidateName").textContent =
+            vote.candidate.full_name || "—";
+        document.getElementById("candidateParty").textContent =
+            vote.candidate.party || "—";
+    }
 
-if (!votedCandidate) {
+    if (vote.voted_at) {
+        const date = new Date(vote.voted_at);
+        const formatted = date.toLocaleString("en-US", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+        document.getElementById("voteDate").textContent = formatted;
+    }
 
-    window.location.href =
-        "dashboard.html";
-
+    sessionStorage.removeItem("voteConfirmation");
 }
-
-
-document.getElementById("candidateName").textContent =
-    votedCandidate.name;
-
-
-document.getElementById("voteDate").textContent =
-    voteDate;

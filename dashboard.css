@@ -1,0 +1,446 @@
+/* =====================================================
+   VOTER DASHBOARD — Professional Styles
+===================================================== */
+
+/* ========== VARIÁVEIS ========== */
+:root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --primary-light: #eff6ff;
+    --success: #16a34a;
+    --success-light: #dcfce7;
+    --danger: #dc2626;
+    --danger-light: #fee2e2;
+    --warning: #f59e0b;
+    --warning-light: #fef3c7;
+    --dark: #0f172a;
+    --gray-900: #1e293b;
+    --gray-700: #334155;
+    --gray-500: #64748b;
+    --gray-300: #cbd5e1;
+    --gray-200: #e2e8f0;
+    --gray-100: #f1f5f9;
+    --gray-50: #f8fafc;
+    --white: #ffffff;
+    --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08);
+    --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+    --shadow-lg: 0 10px 30px rgba(15, 23, 42, 0.12);
+    --radius: 14px;
+    --radius-sm: 10px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    background: var(--gray-100);
+    color: var(--gray-900);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+/* ========== ANIMAÇÕES ========== */
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* =====================================================
+   NAVBAR
+===================================================== */
+.navbar {
+    background: var(--dark);
+    min-height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5%;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.navbar .logo {
+    color: var(--white);
+    font-size: 18px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.navbar .logo::before {
+    content: "🗳️";
+    width: 38px;
+    height: 38px;
+    background: var(--primary);
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+}
+
+.navbar .nav-links {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.navbar .nav-links a {
+    color: var(--gray-300);
+    text-decoration: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.navbar .nav-links a:hover {
+    color: var(--white);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.navbar .nav-links a.active {
+    color: var(--white);
+    background: var(--primary);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+/* =====================================================
+   PAGE HEADER
+===================================================== */
+.page-header {
+    text-align: center;
+    padding: 50px 20px 30px;
+    animation: slideDown 0.5s ease;
+}
+
+.page-title {
+    font-size: 38px;
+    font-weight: 800;
+    color: var(--dark);
+    letter-spacing: -1px;
+    margin-bottom: 10px;
+}
+
+.page-subtitle {
+    font-size: 16px;
+    color: var(--gray-500);
+    font-weight: 500;
+}
+
+.page-subtitle strong,
+#voterName {
+    color: var(--primary);
+    font-weight: 700;
+}
+
+/* =====================================================
+   MAIN CONTAINER
+===================================================== */
+main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 20px 60px;
+}
+
+/* =====================================================
+   STAT GRID
+===================================================== */
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--gray-200);
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+    animation: slideUp 0.5s ease;
+}
+
+.stat-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, var(--primary), var(--primary-dark));
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.stat-card:hover::before {
+    opacity: 1;
+}
+
+.stat-icon {
+    width: 54px;
+    height: 54px;
+    border-radius: var(--radius-sm);
+    background: var(--primary-light);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    flex-shrink: 0;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: var(--gray-500);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 6px;
+}
+
+.stat-value {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--dark);
+    line-height: 1;
+    letter-spacing: -0.5px;
+}
+
+/* =====================================================
+   CARD (genérico)
+===================================================== */
+.card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 30px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--gray-200);
+    transition: var(--transition);
+    animation: slideUp 0.5s ease;
+    margin-bottom: 25px;
+}
+
+.card:hover {
+    box-shadow: var(--shadow-lg);
+}
+
+.card-header {
+    padding-bottom: 18px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.card-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 5px;
+    letter-spacing: -0.3px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.card-subtitle {
+    font-size: 13px;
+    color: var(--gray-500);
+}
+
+/* =====================================================
+   BOTÕES
+===================================================== */
+.btn,
+a.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 28px;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: var(--primary);
+    color: var(--white);
+    font-size: 15px;
+    font-weight: 600;
+    font-family: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
+.btn:hover,
+a.btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
+}
+
+/* =====================================================
+   MY VOTE SECTION
+===================================================== */
+#myVoteSection {
+    animation: slideUp 0.5s ease;
+}
+
+#myVoteInfo {
+    display: flex !important;
+    align-items: center !important;
+    gap: 20px !important;
+    padding: 24px !important;
+    background: linear-gradient(135deg, var(--primary-light) 0%, #dbeafe 100%) !important;
+    border-radius: var(--radius) !important;
+    border-left: 5px solid var(--primary) !important;
+    flex-wrap: wrap;
+}
+
+#myVoteInfo h3 {
+    color: var(--primary-dark) !important;
+    font-size: 22px !important;
+    margin-bottom: 8px !important;
+    font-weight: 800 !important;
+}
+
+#myVoteInfo p {
+    color: var(--gray-700) !important;
+    font-size: 14px !important;
+    margin: 4px 0 !important;
+}
+
+#myVoteInfo strong {
+    color: var(--dark) !important;
+    font-weight: 700 !important;
+}
+
+/* =====================================================
+   LEADING CANDIDATE SECTION
+===================================================== */
+#leadingSection {
+    animation: slideUp 0.6s ease;
+}
+
+#leadingInfo {
+    padding: 26px !important;
+    background: linear-gradient(135deg, var(--success-light) 0%, #bbf7d0 100%) !important;
+    border-radius: var(--radius) !important;
+    border-left: 5px solid var(--success) !important;
+}
+
+#leadingInfo h3 {
+    color: #15803d !important;
+    font-size: 24px !important;
+    font-weight: 800 !important;
+}
+
+#leadingInfo p {
+    color: var(--gray-700) !important;
+}
+
+/* =====================================================
+   LOGOUT BUTTON
+===================================================== */
+#logoutButton {
+    background: var(--danger) !important;
+    color: var(--white) !important;
+    padding: 13px 34px !important;
+    border: none !important;
+    border-radius: var(--radius-sm) !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: var(--transition) !important;
+    font-family: inherit !important;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+}
+
+#logoutButton:hover {
+    background: #b91c1c !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(220, 38, 38, 0.35);
+}
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+@media (max-width: 900px) {
+    .stat-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .page-title {
+        font-size: 30px;
+    }
+}
+
+@media (max-width: 600px) {
+    .navbar {
+        padding: 15px 4%;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .navbar .nav-links {
+        justify-content: center;
+    }
+
+    .page-header {
+        padding: 30px 15px 20px;
+    }
+
+    .page-title {
+        font-size: 26px;
+    }
+
+    .stat-grid {
+        grid-template-columns: 1fr;
+    }
+
+    #myVoteInfo {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    main {
+        padding: 10px 15px 40px;
+    }
+
+    .card {
+        padding: 22px 18px;
+    }
+}

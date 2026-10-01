@@ -1,76 +1,83 @@
-function registerCandidate(event) {
+import { apiCreateCandidate } from "./api.js";
 
+const registrationForm = document.getElementById("registrationForm");
+
+async function registerCandidate(event) {
     event.preventDefault();
 
-    let name = document.getElementById("name").value;
-    let age = document.getElementById("age").value;
-    let gender = document.getElementById("gender").value;
-    let party = document.getElementById("party").value;
-    let position = document.getElementById("position").value;
-    let project = document.getElementById("project").value;
-    let manifesto = document.getElementById("manifesto").value;
-    let email = document.getElementById("email").value;
-    let photo = document.getElementById("photo").files[0];
+    const name = document.getElementById("name").value.trim();
+    const age = document.getElementById("age").value;
+    const gender = document.getElementById("gender").value;
+    const party = document.getElementById("party").value;
+    const position = document.getElementById("position").value;
+    const project = document.getElementById("project").value.trim();
+    const manifesto = document.getElementById("manifesto").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const photoInput = document.getElementById("photo");
+    const photo = photoInput.files[0];
 
-    let reader = new FileReader();
+    if (!photo) {
+        alert("Please select a candidate photo.");
+        return;
+    }
 
-    reader.onload = function () {
+    const reader = new FileReader();
 
-        let candidate = {
-            name: name,
-            age: age,
-            gender: gender,
-            party: party,
-            position: position,
-            project: project,
-            manifesto: manifesto,
-            email: email,
-            photo: reader.result,
-            votes: 0
-        };
+    reader.onload = async function () {
+        const photoBase64 = reader.result;
 
-        let candidates =
-            JSON.parse(localStorage.getItem("candidates")) || [];
+        try {
+            const result = await apiCreateCandidate({
+                full_name: name,
+                age: Number(age),
+                gender: gender,
+                party: party,
+                position: position,
+                project: project,
+                manifesto: manifesto,
+                email: email,
+                photo: photoBase64
+            });
 
-        candidates.push(candidate);
+            if (!result.success) {
+                alert("Error: " + result.message);
+                return;
+            }
 
-        localStorage.setItem(
-            "candidates",
-            JSON.stringify(candidates)
-        );
+            alert("Candidate registered successfully!");
+            window.location.href = "manage_candidate.html";
 
-        document.getElementById("registrationForm").reset();
-
-        document.getElementById("successMessage").style.display = "block";
-
-        alert("Candidate registered successfully!");
-
-        window.location.href = "manage_candidate.html";
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Could not connect to the server.");
+        }
     };
 
     reader.readAsDataURL(photo);
 }
 
-document
-    .getElementById("registrationForm")
-    .addEventListener("submit", registerCandidate);
+if (registrationForm) {
+    registrationForm.addEventListener("submit", registerCandidate);
+}
 
-document.getElementById("photo").addEventListener("change", function () {
-    let photo = this.files[0];
-    let preview = document.getElementById("photoPreview");
+const photoInput = document.getElementById("photo");
 
-    if (!photo) {
-        preview.style.display = "none";
-        preview.removeAttribute("src");
-        return;
-    }
+if (photoInput) {
+    photoInput.addEventListener("change", function () {
+        const photo = this.files[0];
+        const preview = document.getElementById("photoPreview");
 
-    let reader = new FileReader();
+        if (!photo) {
+            preview.style.display = "none";
+            preview.removeAttribute("src");
+            return;
+        }
 
-    reader.onload = function () {
-        preview.src = reader.result;
-        preview.style.display = "block";
-    };
-
-    reader.readAsDataURL(photo);
-});
+        const reader = new FileReader();
+        reader.onload = function () {
+            preview.src = reader.result;
+            preview.style.display = "block";
+        };
+        reader.readAsDataURL(photo);
+    });
+}
