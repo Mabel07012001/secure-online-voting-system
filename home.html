@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Voting System — Secure OTP Authentication</title>
+    
+    <style>
+        /* =====================================================
+           HOME PAGE — HERO SECTION
+        ===================================================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ========== NAVBAR ========== */
+        .navbar {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(12px);
+            min-height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5%;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            flex-wrap: wrap;
+            gap: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .navbar .logo {
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: -0.3px;
+        }
+
+        .navbar .logo::before {
+            content: "🗳️";
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.45);
+        }
+
+        .navbar .nav-links {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .navbar .nav-links a {
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .navbar .nav-links a:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-1px);
+        }
+
+        .navbar .nav-links a.active {
+            color: white;
+            background: #2563eb;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+        }
+
+        /* =====================================================
+           HERO SECTION
+        ===================================================== */
+                /* =====================================================
+           HERO SECTION
+        ===================================================== */
+        .hero {
+            min-height: calc(100vh - 72px);
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #0f172a 100%);
+            background-size: 200% 200%;
+            animation: gradientShift 15s ease infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding: 60px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Bolhas decorativas */
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: -20%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.35) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: float 10s ease-in-out infinite;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            bottom: -25%;
+            left: -10%;
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, rgba(96, 165, 250, 0.25) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: float 12s ease-in-out infinite reverse;
+        }
+
+        /* ========== ANIMAÇÕES ========== */
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-30px) scale(1.05); }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4); }
+            50% { box-shadow: 0 0 0 12px rgba(37, 99, 235, 0); }
+        }
+
+        /* ========== HERO CONTENT ========== */
+        .hero-content {
+            max-width: 900px;
+            position: relative;
+            z-index: 2;
+            animation: slideUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* BADGE */
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 22px;
+            background: rgba(37, 99, 235, 0.18);
+            border: 1px solid rgba(96, 165, 250, 0.4);
+            color: #93c5fd;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+            backdrop-filter: blur(12px);
+            animation: fadeInScale 0.6s ease 0.2s both;
+            box-shadow: 0 4px 20px rgba(37, 99, 235, 0.2);
+        }
+
+        .hero-badge::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            box-shadow: 0 0 12px #22c55e;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        /* TÍTULO */
+        .hero h1 {
+            font-size: 68px;
+            font-weight: 800;
+            letter-spacing: -2px;
+            line-height: 1.05;
+            margin-bottom: 25px;
+            animation: fadeInScale 0.7s ease 0.3s both;
+            text-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, #60a5fa, #93c5fd, #bfdbfe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            display: inline-block;
+        }
+
+        .hero h1 span::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #60a5fa, transparent);
+            border-radius: 2px;
+            opacity: 0.7;
+        }
+
+        /* SUBTÍTULO */
+        .hero p {
+            font-size: 19px;
+            color: #cbd5e1;
+            margin-bottom: 45px;
+            line-height: 1.7;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeInScale 0.7s ease 0.4s both;
+        }
+
+        /* BOTÕES */
+        .hero-buttons {
+            display: flex;
+            gap: 18px;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInScale 0.7s ease 0.5s both;
+        }
+
+        .hero a {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 18px 38px;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.3px;
+        }
+
+        .hero a::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+
+        .hero a:hover::before {
+            width: 400px;
+            height: 400px;
+        }
+
+        /* BOTÃO PRIMÁRIO */
+        .hero a.btn-primary-hero {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            box-shadow: 
+                0 10px 30px rgba(37, 99, 235, 0.45),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .hero a.btn-primary-hero:hover {
+            transform: translateY(-4px);
+            box-shadow: 
+                0 16px 40px rgba(37, 99, 235, 0.55),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        .hero a.btn-primary-hero:active {
+            transform: translateY(-1px);
+        }
+
+        /* BOTÃO SECUNDÁRIO */
+        .hero a.btn-secondary-hero {
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(12px);
+        }
+
+        .hero a.btn-secondary-hero:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(255, 255, 255, 0.1);
+        }
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+        @media (max-width: 900px) {
+            .hero h1 {
+                font-size: 48px;
+                letter-spacing: -1.2px;
+            }
+
+            .hero p {
+                font-size: 17px;
+            }
+
+            .hero a {
+                padding: 16px 30px;
+                font-size: 15px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .navbar {
+                padding: 15px 4%;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .navbar .nav-links {
+                justify-content: center;
+            }
+
+            .navbar .nav-links a {
+                padding: 8px 14px;
+                font-size: 13px;
+            }
+
+            .hero {
+                padding: 50px 20px;
+                background-attachment: scroll;
+            }
+
+            .hero h1 {
+                font-size: 34px;
+                letter-spacing: -1px;
+                margin-bottom: 18px;
+            }
+
+            .hero p {
+                font-size: 15px;
+                margin-bottom: 32px;
+            }
+
+            .hero-badge {
+                padding: 8px 16px;
+                font-size: 11px;
+                margin-bottom: 22px;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+
+            .hero a {
+                justify-content: center;
+                padding: 16px 24px;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .hero h1 {
+                font-size: 28px;
+            }
+
+            .hero p {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="logo">Online Voting System</div>
+        <div class="nav-links">
+            <a href="home.html" class="active">Home</a>
+            <a href="About.html">About</a>
+            <a href="login.html">Login</a>
+            <a href="result.html">Results</a>
+            <a href="Register.html">Register</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">Secure OTP Authentication</div>
+
+            <h1>Vote <span>Securely</span><br>From Anywhere</h1>
+
+            <p>
+                Online voting system with OTP authentication, ensuring
+                the integrity and confidentiality of your vote.
+            </p>
+
+            <div class="hero-buttons">
+                <a href="Register.html" class="btn-primary-hero">
+                    Get Started →
+                </a>
+                <a href="About.html" class="btn-secondary-hero">
+                    Learn More
+                </a>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>

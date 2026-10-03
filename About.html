@@ -4,25 +4,184 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About — Online Voting System</title>
-    <link rel="stylesheet" href="style.css">
+    
     <style>
+        /* =====================================================
+           ABOUT PAGE — Professional Design
+        ===================================================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #eff6ff;
+            --success: #16a34a;
+            --success-light: #dcfce7;
+            --dark: #0f172a;
+            --gray-700: #334155;
+            --gray-500: #64748b;
+            --gray-200: #e2e8f0;
+            --gray-100: #f1f5f9;
+            --gray-50: #f8fafc;
+            --white: #ffffff;
+            --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08);
+            --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+            --shadow-lg: 0 10px 30px rgba(15, 23, 42, 0.12);
+            --radius: 14px;
+            --radius-sm: 10px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+            background: var(--gray-100);
+            color: var(--gray-700);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* ========== NAVBAR ========== */
+        .navbar {
+            background: var(--dark);
+            min-height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5%;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .navbar .logo {
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar .logo::before {
+            content: "🗳️";
+            width: 38px;
+            height: 38px;
+            background: var(--primary);
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+        }
+
+        .navbar .nav-links {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .navbar .nav-links a {
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .navbar .nav-links a:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .navbar .nav-links a.active {
+            color: white;
+            background: var(--primary);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        /* =====================================================
+           PAGE HEADER
+        ===================================================== */
+        .page-header {
+            text-align: center;
+            padding: 60px 20px 20px;
+            animation: slideDown 0.5s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-title {
+            font-size: 46px;
+            font-weight: 800;
+            color: var(--dark);
+            letter-spacing: -1.2px;
+            margin-bottom: 12px;
+            line-height: 1.1;
+        }
+
+        .page-title span {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-subtitle {
+            font-size: 16px;
+            color: var(--gray-500);
+            font-weight: 500;
+        }
+
+        /* =====================================================
+           ABOUT CONTAINER
+        ===================================================== */
         .about-container {
-            max-width: 900px;
-            margin: 40px auto;
+            max-width: 950px;
+            margin: 40px auto 80px;
             padding: 0 20px;
         }
 
+        /* =====================================================
+           INFO CARD
+        ===================================================== */
         .info-card {
             background: var(--white);
             border-radius: var(--radius);
-            padding: 35px;
+            padding: 38px 40px 38px 45px;
             box-shadow: var(--shadow-md);
             border: 1px solid var(--gray-200);
             margin-bottom: 25px;
             transition: var(--transition);
             position: relative;
             overflow: hidden;
+            animation: slideUp 0.6s ease backwards;
         }
+
+        .info-card:nth-child(1) { animation-delay: 0.05s; }
+        .info-card:nth-child(2) { animation-delay: 0.15s; }
+        .info-card:nth-child(3) { animation-delay: 0.25s; }
+        .info-card:nth-child(4) { animation-delay: 0.35s; }
+        .info-card:nth-child(5) { animation-delay: 0.45s; }
 
         .info-card::before {
             content: "";
@@ -32,60 +191,187 @@
             width: 5px;
             height: 100%;
             background: linear-gradient(180deg, var(--primary), var(--primary-dark));
+            transition: var(--transition);
         }
 
         .info-card:hover {
             box-shadow: var(--shadow-lg);
-            transform: translateY(-3px);
+            transform: translateY(-4px);
+            border-color: #cbd5e1;
         }
 
+        .info-card:hover::before {
+            width: 8px;
+        }
+
+        /* =====================================================
+           CARD HEADER
+        ===================================================== */
         .info-card h2 {
             font-size: 22px;
             font-weight: 700;
             color: var(--dark);
-            margin-bottom: 15px;
+            margin-bottom: 18px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
+            letter-spacing: -0.3px;
         }
 
         .info-card h2 .icon {
-            width: 44px;
-            height: 44px;
-            background: var(--primary-light);
-            border-radius: var(--radius-sm);
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary-light), #dbeafe);
+            border-radius: 12px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
+            font-size: 24px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+            transition: var(--transition);
         }
 
+        .info-card:hover h2 .icon {
+            transform: scale(1.08) rotate(-3deg);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.25);
+        }
+
+        /* =====================================================
+           CARD BODY
+        ===================================================== */
         .info-card p {
             color: var(--gray-700);
             line-height: 1.8;
             font-size: 15px;
         }
 
+        .info-card p strong {
+            color: var(--primary-dark);
+            font-weight: 700;
+        }
+
+        /* =====================================================
+           CONTACT INFO
+        ===================================================== */
         .contact-info {
             display: flex;
             flex-wrap: wrap;
-            gap: 20px;
-            margin-top: 15px;
+            gap: 15px;
+            margin-top: 20px;
         }
 
         .contact-item {
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 10px;
-            padding: 12px 20px;
+            gap: 12px;
+            padding: 14px 24px;
             background: var(--gray-50);
+            border: 1px solid var(--gray-200);
             border-radius: var(--radius-sm);
             color: var(--gray-700);
             font-size: 14px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .contact-item:hover {
+            background: var(--primary-light);
+            border-color: #bfdbfe;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
         }
 
         .contact-item strong {
             color: var(--primary);
+            font-weight: 700;
+        }
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 15px 4%;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .navbar .nav-links {
+                justify-content: center;
+            }
+
+            .navbar .nav-links a {
+                padding: 8px 14px;
+                font-size: 13px;
+            }
+
+            .page-header {
+                padding: 40px 20px 15px;
+            }
+
+            .page-title {
+                font-size: 34px;
+                letter-spacing: -0.8px;
+            }
+
+            .page-subtitle {
+                font-size: 15px;
+            }
+
+            .about-container {
+                margin: 30px auto 50px;
+            }
+
+            .info-card {
+                padding: 28px 25px 28px 30px;
+            }
+
+            .info-card h2 {
+                font-size: 18px;
+                gap: 12px;
+            }
+
+            .info-card h2 .icon {
+                width: 42px;
+                height: 42px;
+                font-size: 20px;
+            }
+
+            .info-card p {
+                font-size: 14px;
+                line-height: 1.7;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-title {
+                font-size: 28px;
+            }
+
+            .info-card {
+                padding: 25px 20px 25px 25px;
+            }
+
+            .info-card h2 {
+                font-size: 16px;
+                gap: 10px;
+            }
+
+            .info-card h2 .icon {
+                width: 38px;
+                height: 38px;
+                font-size: 18px;
+            }
+
+            .contact-info {
+                flex-direction: column;
+            }
+
+            .contact-item {
+                width: 100%;
+                justify-content: center;
+            }
         }
     </style>
 </head>
@@ -103,62 +389,59 @@
     </nav>
 
     <div class="page-header">
-        <h1 class="page-title">Sobre o Sistema</h1>
-        <p class="page-subtitle">Conheça o Online Voting System</p>
+        <h1 class="page-title">About the <span>System</span></h1>
+        <p class="page-subtitle">Discover the Online Voting System</p>
     </div>
 
     <div class="about-container">
 
         <div class="info-card">
-            <h2><span class="icon">📋</span> Descrição do Sistema</h2>
+            <h2><span class="icon">📋</span> System Description</h2>
             <p>
-                O <strong>Online Voting System</strong> é uma aplicação web desenvolvida para
-                facilitar processos de votação de forma segura e eficiente. Permite que
-                utilizadores se registem, façam login e votem electronicamente. O sistema
-                garante a integridade do processo através de encriptação e mecanismos de
-                autenticação, oferecendo uma plataforma conveniente e acessível.
+                The <strong>Online Voting System</strong> is a web-based application designed
+                to facilitate secure and efficient voting processes. It allows users to
+                register, log in, and cast their votes electronically. The system ensures
+                the integrity of the process through encryption and authentication
+                mechanisms, providing a convenient and accessible platform for voters.
             </p>
         </div>
 
         <div class="info-card">
-            <h2><span class="icon">🔐</span> Autenticação OTP & Segurança</h2>
+            <h2><span class="icon">🔐</span> OTP Authentication & Security</h2>
             <p>
-                A autenticação <strong>OTP (One-Time Password)</strong> é uma medida de segurança
-                usada para verificar a identidade dos utilizadores antes de acederem ao sistema.
-                Os utilizadores recebem um código único via email, que devem introduzir para
-                completar o processo. Isto adiciona uma camada extra de segurança contra
-                acessos não autorizados.
+                <strong>OTP (One-Time Password)</strong> authentication is a security measure
+                used to verify the identity of users before they access the system. Users
+                receive a unique code via email, which they must enter to complete the
+                process. This adds an extra layer of security against unauthorized access.
             </p>
         </div>
 
         <div class="info-card">
-            <h2><span class="icon">✅</span> Benefícios do Sistema</h2>
+            <h2><span class="icon">✅</span> Benefits of the System</h2>
             <p>
-                O sistema oferece várias vantagens sobre métodos tradicionais de votação.
-                Proporciona uma plataforma mais conveniente e acessível, especialmente para
-                aqueles que não podem comparecer fisicamente às urnas. Além disso, garante
-                a integridade e confidencialidade do processo, tornando-se uma solução
-                fiável para processos democráticos modernos.
+                The system offers several advantages over traditional voting methods. It
+                provides a more convenient and accessible platform, especially for those
+                who cannot physically attend polling stations. Additionally, it ensures
+                the integrity and confidentiality of the process, making it a reliable
+                solution for modern democratic processes.
             </p>
         </div>
 
         <div class="info-card">
-            <h2><span class="icon">🛡️</span> Informação de Segurança</h2>
+            <h2><span class="icon">🛡️</span> Security Information</h2>
             <p>
-                O sistema implementa medidas robustas para proteger a integridade e
-                confidencialidade do processo de votação, incluindo encriptação
-                ponta-a-ponta, protocolos de autenticação seguros e auditorias
-                regulares de segurança.
+                The system implements robust measures to protect the integrity and
+                confidentiality of the voting process, including end-to-end encryption,
+                secure authentication protocols, and regular security audits to identify
+                and address potential vulnerabilities.
             </p>
         </div>
 
         <div class="info-card">
-            <h2><span class="icon">📞</span> Contacto</h2>
-            <p>Para mais informações, entre em contacto com a nossa equipa:</p>
+            <h2><span class="icon">📞</span> Contact Information</h2>
+            <p>For more information, please contact our support team:</p>
             <div class="contact-info">
-                <div class="contact-item">
-                    📧 <strong>support@securevote.com</strong>
-                </div>
+               
                 <div class="contact-item">
                     📱 <strong>+234 913 602 1813</strong>
                 </div>

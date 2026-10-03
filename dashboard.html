@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voter Dashboard Design and Implementation of a Secure Online Voting System Using OTP Authentication</title>
+    <title>Voter Dashboard — Online Voting System</title>
     <link rel="stylesheet" href="dashboard.css">
 </head>
 <body>
@@ -23,7 +23,7 @@
     <div class="page-header">
         <h1 class="page-title">Voter Dashboard</h1>
         <p class="page-subtitle">
-            Bem-vindo, <strong id="voterName">...</strong>
+            Welcome, <strong id="voterName">...</strong>
         </p>
     </div>
 
@@ -65,40 +65,30 @@
 
         </div>
 
-        <!-- ═══════════════════════════════════════════ -->
-        <!-- SE JÁ VOTOU — Mostra em quem votou         -->
-        <!-- ═══════════════════════════════════════════ -->
         <div id="myVoteSection" style="display: none; margin-top: 30px;">
             <div class="card" style="padding: 30px;">
                 <div class="card-header">
-                    <h2 class="card-title">✅ O Seu Voto</h2>
-                    <p class="card-subtitle">Confirmação do voto registado</p>
+                    <h2 class="card-title">✅ Your Vote</h2>
+                    <p class="card-subtitle">Confirmation of your recorded vote</p>
                 </div>
 
                 <div id="myVoteInfo" style="display: flex; align-items: center; gap: 20px; padding: 20px; background: #eff6ff; border-radius: 12px; border-left: 4px solid #2563eb; flex-wrap: wrap;">
-                    <!-- preenchido pelo JS -->
                 </div>
             </div>
         </div>
 
-        <!-- ═══════════════════════════════════════════ -->
-        <!-- CANDIDATO LÍDER                             -->
-        <!-- ═══════════════════════════════════════════ -->
         <div id="leadingSection" style="margin-top: 30px;">
             <div class="card" style="padding: 30px;">
                 <div class="card-header">
-                    <h2 class="card-title">🏆 Candidato Líder</h2>
-                    <p class="card-subtitle">Resultados parciais em tempo real</p>
+                    <h2 class="card-title">🏆 Leading Candidate</h2>
+                    <p class="card-subtitle">Partial results in real time</p>
                 </div>
                 <div id="leadingInfo" style="padding: 20px; background: #dcfce7; border-radius: 12px; border-left: 4px solid #16a34a;">
-                    Carregando...
+                    Loading...
                 </div>
             </div>
         </div>
 
-        <!-- ═══════════════════════════════════════════ -->
-        <!-- BOTÕES                                      -->
-        <!-- ═══════════════════════════════════════════ -->
         <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 30px;">
             <a href="cast_vote.html" class="btn" id="voteBtn">Vote Now →</a>
             <a href="result.html" class="btn" style="background: white; color: #2563eb; border: 2px solid #2563eb; box-shadow: none;">

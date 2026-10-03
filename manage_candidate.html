@@ -5,197 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Candidates — Online Voting System</title>
     <link rel="stylesheet" href="manage_candidate.css">
-    <style>
-        /* MODAL ADMIN */
-        .admin-modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(15, 23, 42, 0.85);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            backdrop-filter: blur(8px);
-        }
-
-        .admin-modal-overlay.active {
-            display: flex;
-        }
-
-        .admin-modal {
-            background: white;
-            border-radius: 18px;
-            max-width: 440px;
-            width: 100%;
-            padding: 40px 35px;
-            box-shadow: 0 30px 80px rgba(0,0,0,0.5);
-            position: relative;
-            animation: modalSlideUp 0.3s ease;
-        }
-
-        @keyframes modalSlideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .admin-modal::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 5px;
-            background: linear-gradient(90deg, #dc2626, #ef4444, #dc2626);
-            border-radius: 18px 18px 0 0;
-        }
-
-        .admin-modal-icon {
-            width: 70px;
-            height: 70px;
-            margin: 0 auto 20px;
-            background: #fee2e2;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 34px;
-        }
-
-        .admin-modal h2 {
-            text-align: center;
-            color: #0f172a;
-            font-size: 22px;
-            margin-bottom: 8px;
-        }
-
-        .admin-modal p {
-            text-align: center;
-            color: #64748b;
-            font-size: 14px;
-            line-height: 1.6;
-            margin-bottom: 25px;
-        }
-
-        .admin-modal .form-group {
-            margin-bottom: 16px;
-        }
-
-        .admin-modal label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            color: #334155;
-            margin-bottom: 6px;
-        }
-
-        .admin-modal input {
-            width: 100%;
-            padding: 13px 16px;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 15px;
-            outline: none;
-            transition: all 0.2s;
-            font-family: inherit;
-            box-sizing: border-box;
-        }
-
-        .admin-modal input:focus {
-            border-color: #dc2626;
-            box-shadow: 0 0 0 4px #fee2e2;
-        }
-
-        .admin-modal-error {
-            background: #fee2e2;
-            color: #991b1b;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 13px;
-            margin-bottom: 15px;
-            display: none;
-            border-left: 4px solid #dc2626;
-        }
-
-        .admin-modal-error.show { display: block; }
-
-        .admin-modal-buttons {
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
-        }
-
-        .admin-modal-buttons button {
-            flex: 1;
-            padding: 14px;
-            border: none;
-            border-radius: 10px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-family: inherit;
-        }
-
-        .btn-modal-cancel {
-            background: #f1f5f9;
-            color: #334155;
-        }
-
-        .btn-modal-cancel:hover { background: #e2e8f0; }
-
-        .btn-modal-login {
-            background: linear-gradient(135deg, #dc2626, #b91c1c);
-            color: white;
-            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
-        }
-
-        .btn-modal-login:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(220, 38, 38, 0.4);
-        }
-
-        .btn-modal-login:disabled {
-            background: #94a3b8;
-            cursor: not-allowed;
-        }
-
-        /* BOTÕES DE AÇÃO */
-        .btn-edit-action {
-            background: #dbeafe;
-            color: #1d4ed8;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-right: 5px;
-            transition: all 0.2s;
-            font-family: inherit;
-        }
-
-        .btn-edit-action:hover {
-            background: #2563eb;
-            color: white;
-        }
-
-        .btn-delete-action {
-            background: #fee2e2;
-            color: #dc2626;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-family: inherit;
-        }
-
-        .btn-delete-action:hover {
-            background: #dc2626;
-            color: white;
-        }
-    </style>
+    
 </head>
 <body>
 
@@ -228,19 +38,18 @@
             </tr>
         </thead>
         <tbody id="candidatesTableBody">
-            <tr><td colspan="9" style="text-align:center;padding:40px;">A carregar...</td></tr>
+            <tr><td colspan="9" style="text-align:center;padding:40px;">Loading...</td></tr>
         </tbody>
     </table>
 
 
-    <!-- MODAL DE LOGIN ADMIN -->
     <div id="adminModal" class="admin-modal-overlay">
         <div class="admin-modal">
             <div class="admin-modal-icon">🔒</div>
-            <h2>Acesso Restrito</h2>
+            <h2>Restricted Access</h2>
             <p>
-                Apenas administradores podem <strong id="adminActionLabel">editar/apagar</strong> candidatos.<br>
-                Faça login para continuar.
+                Only administrators can <strong id="adminActionLabel">edit/delete</strong> candidates.<br>
+                Please login to continue.
             </p>
 
             <div id="adminModalError" class="admin-modal-error"></div>
@@ -253,15 +62,15 @@
 
                 <div class="form-group">
                     <label for="adminModalPassword">Password</label>
-                    <input type="password" id="adminModalPassword" placeholder="Digite a sua password" required>
+                    <input type="password" id="adminModalPassword" placeholder="Enter your password" required>
                 </div>
 
                 <div class="admin-modal-buttons">
                     <button type="button" class="btn-modal-cancel" onclick="closeAdminModal()">
-                        Cancelar
+                        Cancel
                     </button>
                     <button type="submit" class="btn-modal-login" id="adminModalLoginBtn">
-                        Entrar como Admin
+                        Login as Admin
                     </button>
                 </div>
             </form>

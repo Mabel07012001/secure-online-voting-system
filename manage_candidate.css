@@ -1,7 +1,5 @@
-```css
 /* =====================================================
-   ONLINE VOTING SYSTEM
-   MANAGE CANDIDATES
+   MANAGE CANDIDATES — Professional Design
 ===================================================== */
 
 * {
@@ -14,380 +12,535 @@
     --primary: #2563eb;
     --primary-dark: #1d4ed8;
     --primary-light: #eff6ff;
-
-    --secondary: #0f172a;
-    --background: #eef2f7;
-
-    --white: #ffffff;
-    --text: #0f172a;
-    --text-light: #64748b;
-
-    --border: #d7dee8;
-
     --success: #16a34a;
+    --success-light: #dcfce7;
     --danger: #dc2626;
-
-    --shadow: 0 8px 24px rgba(15, 23, 42, 0.10);
-    --radius: 12px;
+    --danger-dark: #b91c1c;
+    --danger-light: #fee2e2;
+    --warning: #f59e0b;
+    --warning-light: #fef3c7;
+    --dark: #0f172a;
+    --gray-900: #1e293b;
+    --gray-700: #334155;
+    --gray-500: #64748b;
+    --gray-400: #94a3b8;
+    --gray-300: #cbd5e1;
+    --gray-200: #e2e8f0;
+    --gray-100: #f1f5f9;
+    --gray-50: #f8fafc;
+    --white: #ffffff;
+    --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08);
+    --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+    --shadow-lg: 0 10px 30px rgba(15, 23, 42, 0.12);
+    --shadow-xl: 0 30px 80px rgba(0, 0, 0, 0.5);
+    --radius: 14px;
+    --radius-sm: 10px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* =========================
-   BODY
-========================= */
-
 body {
-    font-family: "Segoe UI", Arial, sans-serif;
-    background: var(--background);
-    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    background: var(--gray-100);
+    color: var(--gray-900);
+    line-height: 1.6;
     min-height: 100vh;
 }
 
-/* =========================
-   NAVIGATION
-========================= */
-
-nav {
-    min-height: 72px;
-    background: #0f172a;
-
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    padding: 0 7%;
-
-    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.20);
+/* =====================================================
+   ANIMAÇÕES
+===================================================== */
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-/* Logo */
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
-.logo {
+@keyframes modalSlideUp {
+    from { opacity: 0; transform: translateY(30px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* =====================================================
+   NAVBAR
+===================================================== */
+nav {
+    background: var(--dark);
+    min-height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5%;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+nav .logo {
+    color: var(--white);
+    font-size: 18px;
+    font-weight: 700;
     display: flex;
     align-items: center;
     gap: 10px;
-
-    color: #ffffff;
-
-    font-size: 21px;
-    font-weight: 700;
+    padding: 15px 0;
 }
 
-.logo::before {
+nav .logo::before {
     content: "🗳️";
-
     width: 38px;
     height: 38px;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    background: #2563eb;
-
+    background: var(--primary);
     border-radius: 10px;
-
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     font-size: 18px;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    flex-shrink: 0;
 }
 
-/* Navigation links */
-
-.nav-links {
+nav .nav-links {
     display: flex;
-    gap: 7px;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
-.nav-links a {
-    color: #cbd5e1;
-
+nav .nav-links a {
+    color: var(--gray-300);
     text-decoration: none;
-
-    padding: 10px 15px;
-
-    border-radius: 7px;
-
+    padding: 10px 16px;
+    border-radius: var(--radius-sm);
     font-size: 14px;
     font-weight: 500;
-
-    transition: 0.25s ease;
+    transition: var(--transition);
+    white-space: nowrap;
 }
 
-.nav-links a:hover {
-    color: #ffffff;
-    background: #1e293b;
+nav .nav-links a:hover {
+    color: var(--white);
+    background: rgba(255, 255, 255, 0.08);
 }
 
-/* Active Candidate link */
-
-.nav-links a:nth-child(2) {
-    background: #2563eb;
-    color: #ffffff;
+nav .nav-links a.active {
+    color: var(--white);
+    background: var(--primary);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
 }
 
-/* =========================
+/* =====================================================
    PAGE TITLE
-========================= */
-
+===================================================== */
 body > h1 {
-    width: 90%;
-    max-width: 1250px;
-
-    margin: 45px auto 25px;
-
-    font-size: 32px;
-    font-weight: 700;
-
-    color: #0f172a;
+    max-width: 1300px;
+    margin: 45px auto 10px;
+    padding: 0 5%;
+    font-size: 38px;
+    font-weight: 800;
+    color: var(--dark);
+    letter-spacing: -1px;
+    animation: slideDown 0.5s ease;
+    position: relative;
 }
 
 body > h1::after {
     content: "";
-
     display: block;
-
-    width: 55px;
-    height: 4px;
-
-    background: #2563eb;
-
-    border-radius: 5px;
-
-    margin-top: 12px;
+    width: 70px;
+    height: 5px;
+    background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+    border-radius: 3px;
+    margin-top: 14px;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
 }
 
-/* =========================
-   SEARCH
-========================= */
-
+/* =====================================================
+   SEARCH INPUT
+===================================================== */
 #searchInput {
     display: block;
-
     width: 90%;
-    max-width: 1250px;
-
-    margin: 0 auto 25px;
-
-    padding: 14px 17px;
-
-    border: 1px solid #cbd5e1;
-
-    border-radius: 9px;
-
-    background: #ffffff;
-
-    font-size: 14px;
-
-    color: #0f172a;
-
+    max-width: 1300px;
+    margin: 30px auto;
+    padding: 15px 20px;
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-sm);
+    background: var(--white);
+    font-size: 15px;
+    font-family: inherit;
+    color: var(--dark);
     outline: none;
-
-    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.07);
-
-    transition: 0.25s ease;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
 }
 
 #searchInput::placeholder {
-    color: #94a3b8;
+    color: var(--gray-400);
 }
 
 #searchInput:focus {
-    border-color: #2563eb;
-
-    box-shadow: 0 0 0 4px #dbeafe;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px var(--primary-light),
+                0 4px 12px rgba(37, 99, 235, 0.1);
+    transform: translateY(-1px);
 }
 
-/* =========================
+/* =====================================================
    TABLE
-========================= */
-
+===================================================== */
 table {
     width: 90%;
-    max-width: 1250px;
-
+    max-width: 1300px;
     margin: 0 auto 60px;
-
-    background: #ffffff;
-
+    background: var(--white);
     border-collapse: separate;
     border-spacing: 0;
-
-    border: 1px solid #d7dee8;
-
-    border-radius: 12px;
-
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
     overflow: hidden;
-
-    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.10);
-
+    box-shadow: var(--shadow-lg);
     font-size: 14px;
+    animation: slideUp 0.5s ease;
 }
 
-/* =========================
-   TABLE HEADER
-========================= */
-
 thead {
-    background: #eaf0f7;
+    background: var(--dark);
 }
 
 th {
-    padding: 16px 14px;
-
+    padding: 18px 16px;
     text-align: left;
-
-    color: #334155;
-
+    color: var(--white);
     font-size: 12px;
-
     text-transform: uppercase;
-
-    letter-spacing: 0.5px;
-
+    letter-spacing: 0.8px;
     font-weight: 700;
-
-    border-bottom: 2px solid #d7dee8;
-
     white-space: nowrap;
 }
 
-/* =========================
-   TABLE BODY
-========================= */
-
 td {
-    padding: 15px 14px;
-
-    border-bottom: 1px solid #e2e8f0;
-
-    color: #334155;
-
+    padding: 16px;
+    border-bottom: 1px solid var(--gray-200);
+    color: var(--gray-700);
     vertical-align: middle;
-
-    background: #ffffff;
+    background: var(--white);
 }
 
 tbody tr {
-    transition: 0.2s ease;
+    transition: var(--transition);
 }
 
 tbody tr:hover td {
-    background: #f5f9ff;
+    background: var(--primary-light);
 }
 
 tbody tr:last-child td {
     border-bottom: none;
 }
 
-/* =========================
+/* =====================================================
    CANDIDATE PHOTO
-========================= */
-
+===================================================== */
 td img {
-    width: 65px;
-    height: 65px;
-
+    width: 55px;
+    height: 55px;
     object-fit: cover;
-
     object-position: center top;
-
     border-radius: 50%;
-
-    border: 3px solid #ffffff;
-
-    outline: 3px solid #2563eb;
-
-    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.18);
-
+    border: 3px solid var(--white);
+    outline: 3px solid var(--primary);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
     display: block;
-
-    background: #e2e8f0;
+    background: var(--gray-200);
+    transition: var(--transition);
 }
 
-/* =========================
-   VOTES
-========================= */
+tbody tr:hover td img {
+    transform: scale(1.08);
+    outline-color: var(--primary-dark);
+}
 
+/* =====================================================
+   VOTES COLUMN (highlight)
+===================================================== */
 td:nth-child(7) {
-    font-weight: 700;
-
-    color: #2563eb;
+    font-weight: 800;
+    color: var(--primary);
+    font-size: 16px;
+    text-align: center;
 }
 
-/* =========================
-   ACTIONS
-========================= */
-
+/* =====================================================
+   ACTIONS COLUMN
+===================================================== */
 td:last-child {
     white-space: nowrap;
+    text-align: right;
 }
 
-td button {
+/* =====================================================
+   ACTION BUTTONS (Edit / Delete)
+===================================================== */
+.btn-edit-action,
+.btn-delete-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     border: none;
-
-    padding: 9px 13px;
-
-    border-radius: 7px;
-
+    padding: 9px 14px;
+    border-radius: var(--radius-sm);
     font-size: 12px;
-
-    font-weight: 600;
-
+    font-weight: 700;
+    font-family: inherit;
     cursor: pointer;
-
-    margin-right: 5px;
-
-    transition: 0.2s ease;
+    transition: var(--transition);
+    letter-spacing: 0.2px;
 }
 
-/* Edit */
-
-td button:first-child {
+.btn-edit-action {
     background: #dbeafe;
-
-    color: #1d4ed8;
+    color: var(--primary-dark);
+    margin-right: 6px;
 }
 
-td button:first-child:hover {
-    background: #2563eb;
-
-    color: #ffffff;
+.btn-edit-action:hover {
+    background: var(--primary);
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
 }
 
-/* Delete */
-
-td button:last-child {
-    background: #fee2e2;
-
-    color: #dc2626;
+.btn-delete-action {
+    background: var(--danger-light);
+    color: var(--danger);
 }
 
-td button:last-child:hover {
-    background: #dc2626;
-
-    color: #ffffff;
+.btn-delete-action:hover {
+    background: var(--danger);
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(220, 38, 38, 0.35);
 }
 
-/* =========================
+/* =====================================================
+   ADMIN MODAL
+===================================================== */
+.admin-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(15, 23, 42, 0.85);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+    animation: fadeIn 0.3s ease;
+}
+
+.admin-modal-overlay.active {
+    display: flex;
+}
+
+.admin-modal {
+    background: var(--white);
+    border-radius: 18px;
+    max-width: 440px;
+    width: 100%;
+    padding: 45px 40px 35px;
+    box-shadow: var(--shadow-xl);
+    position: relative;
+    animation: modalSlideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.admin-modal::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, var(--danger), #ef4444, var(--danger));
+    border-radius: 18px 18px 0 0;
+}
+
+/* ICON */
+.admin-modal-icon {
+    width: 75px;
+    height: 75px;
+    margin: 0 auto 20px;
+    background: var(--danger-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    animation: pulse 3s ease-in-out infinite;
+    box-shadow: 0 8px 20px rgba(220, 38, 38, 0.15);
+}
+
+/* TITLE */
+.admin-modal h2 {
+    text-align: center;
+    color: var(--dark);
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 10px;
+    letter-spacing: -0.5px;
+}
+
+.admin-modal p {
+    text-align: center;
+    color: var(--gray-500);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 28px;
+}
+
+.admin-modal p strong {
+    color: var(--danger);
+    font-weight: 700;
+}
+
+/* FORM */
+.admin-modal .form-group {
+    margin-bottom: 18px;
+}
+
+.admin-modal label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: 8px;
+    letter-spacing: 0.2px;
+}
+
+.admin-modal input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-sm);
+    font-size: 15px;
+    font-family: inherit;
+    color: var(--dark);
+    background: var(--white);
+    outline: none;
+    transition: var(--transition);
+    box-sizing: border-box;
+}
+
+.admin-modal input::placeholder {
+    color: var(--gray-400);
+}
+
+.admin-modal input:focus {
+    border-color: var(--danger);
+    box-shadow: 0 0 0 4px var(--danger-light);
+}
+
+/* ERROR */
+.admin-modal-error {
+    background: var(--danger-light);
+    color: #991b1b;
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 15px;
+    display: none;
+    border-left: 4px solid var(--danger);
+    animation: slideDown 0.3s ease;
+}
+
+.admin-modal-error.show {
+    display: block;
+}
+
+/* BUTTONS */
+.admin-modal-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 25px;
+}
+
+.admin-modal-buttons button {
+    flex: 1;
+    padding: 15px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 15px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: var(--transition);
+    letter-spacing: 0.2px;
+}
+
+.btn-modal-cancel {
+    background: var(--gray-100);
+    color: var(--gray-700);
+    border: 2px solid var(--gray-200);
+}
+
+.btn-modal-cancel:hover {
+    background: var(--gray-200);
+    color: var(--dark);
+}
+
+.btn-modal-login {
+    background: linear-gradient(135deg, var(--danger), var(--danger-dark));
+    color: var(--white);
+    box-shadow: 0 4px 14px rgba(220, 38, 38, 0.3);
+}
+
+.btn-modal-login:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(220, 38, 38, 0.45);
+}
+
+.btn-modal-login:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.btn-modal-login:disabled {
+    background: var(--gray-400);
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+/* =====================================================
    EMPTY TABLE
-========================= */
-
+===================================================== */
 #candidatesTableBody:empty::after {
     content: "No candidates found.";
-
     display: block;
-
     text-align: center;
-
-    padding: 40px;
-
-    color: #64748b;
+    padding: 50px 20px;
+    color: var(--gray-500);
+    font-style: italic;
 }
 
-/* =========================
+/* =====================================================
    RESPONSIVE
-========================= */
-
+===================================================== */
 @media (max-width: 1000px) {
-
     nav {
         padding: 0 4%;
     }
@@ -400,79 +553,71 @@ td button:last-child:hover {
 
     table {
         display: block;
-
         overflow-x: auto;
-
         white-space: nowrap;
     }
 }
 
-/* =========================
-   TABLET
-========================= */
-
 @media (max-width: 700px) {
-
     nav {
         height: auto;
-
-        padding: 18px;
-
+        padding: 15px 20px;
         flex-direction: column;
-
-        gap: 15px;
+        gap: 12px;
     }
 
-    .nav-links {
+    nav .nav-links {
         flex-wrap: wrap;
-
         justify-content: center;
     }
 
     body > h1 {
-        font-size: 26px;
-
+        font-size: 28px;
         margin-top: 30px;
     }
 
     #searchInput {
-        padding: 12px 14px;
+        padding: 13px 16px;
+    }
+
+    .admin-modal {
+        padding: 35px 25px 30px;
+    }
+
+    .admin-modal h2 {
+        font-size: 20px;
+    }
+
+    .admin-modal-icon {
+        width: 65px;
+        height: 65px;
+        font-size: 30px;
     }
 }
 
-/* =========================
-   MOBILE
-========================= */
-
 @media (max-width: 480px) {
-
     nav {
-        padding: 16px;
+        padding: 14px 15px;
     }
 
-    .logo {
-        font-size: 18px;
+    nav .logo {
+        font-size: 16px;
     }
 
-    .nav-links {
+    nav .nav-links {
         width: 100%;
-
         flex-direction: column;
-
         gap: 4px;
     }
 
-    .nav-links a {
+    nav .nav-links a {
         width: 100%;
-
         text-align: center;
     }
 
     body > h1 {
         width: 92%;
-
-        font-size: 23px;
-
+        font-size: 24px;
         margin-top: 25px;
     }
 
@@ -482,18 +627,29 @@ td button:last-child:hover {
 
     table {
         width: 92%;
-
         font-size: 13px;
     }
 
-    th,
-    td {
+    th, td {
         padding: 12px 10px;
     }
 
     td img {
-        width: 60px;
-        height: 60px;
+        width: 45px;
+        height: 45px;
+    }
+
+    .btn-edit-action,
+    .btn-delete-action {
+        padding: 7px 10px;
+        font-size: 11px;
+    }
+
+    .admin-modal {
+        padding: 30px 20px 25px;
+    }
+
+    .admin-modal-buttons {
+        flex-direction: column;
     }
 }
-```
