@@ -1,31 +1,44 @@
-const express = require("express");
-const cors = require("cors");
-const dotenv = require("dotenv");
-const nodemailer = require("nodemailer");
-const crypto = require("crypto");
-const dns = require("dns");
+// Aqui vão as bibliotecas que precisamos
+const express = require("express");              
+const cors = require("cors");                     
+const dotenv = require("dotenv");                 
+const nodemailer = require("nodemailer");         
+const crypto = require("crypto");                 
+const dns = require("dns");                       
 const { createClient } = require("@supabase/supabase-js");
 
+// Esta linha força o Node a usar IPv4 primeiro e resolveu.
 dns.setDefaultResultOrder("ipv4first");
 
+// Carrega as variáveis do .env (URL do Supabase, email, password, etc.)
 dotenv.config();
 
+// ==========================================
+// SETUP BÁSICO DO SERVIDOR
+// ==========================================
 const app = express();
-const PORT = process.env.PORT || 1977;
+const PORT = process.env.PORT || 1977;           
 
-app.use(cors());
-app.use(express.json({ limit: "10mb" }));
+app.use(cors());                                  
+app.use(express.json({ limit: "10mb" }));         
 
+// ==========================================
+// LIGAÇÃO AO SUPABASE
+// ==========================================
 const supabase = createClient(
     process.env.SUPABASE_URL,
     process.env.SUPABASE_KEY
 );
 
+// ==========================================
+// NODEMAILER (envio de emails)
+// ==========================================
+// Usa o SMTP do Gmail para mandar os códigos OTP.
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,
     secure: true,
-    family: 4,
+    family: 4,                                    
     auth: {
         user: process.env.GMAIL_USER,
         pass: process.env.GMAIL_APP_PASSWORD
@@ -33,6 +46,10 @@ const transporter = nodemailer.createTransport({
     tls: { servername: "smtp.gmail.com" }
 });
 
+
+// ==========================================
+// FUNÇÕES QUE AJUDAM NO DIA A DIA
+// ==========================================
 
 function generateConfirmationId() {
     const year = new Date().getFullYear();
@@ -81,7 +98,10 @@ function otpEmailTemplate(otp, purpose = "verification", title = "Your OTP Code"
         `
     };
 }
-
+// ==========================================
+// ROTA DE TESTE
+// ==========================================
+// Abrir isto no browser serve para verificar se o servidor está vivo.
 
 app.get("/", (req, res) => {
     res.json({
@@ -93,10 +113,14 @@ app.get("/", (req, res) => {
 });
 
 
+// ==========================================
+// 1. REGISTO DE ELEITOR
+// ==========================================
 app.post("/api/register", async (req, res) => {
     try {
         const { full_name, email, password } = req.body;
 
+        // Verificações básicas dos dados
         if (!full_name || !email || !password) {
             return res.status(400).json({ success: false, message: "Please fill in all fields." });
         }
@@ -104,6 +128,7 @@ app.post("/api/register", async (req, res) => {
             return res.status(400).json({ success: false, message: "Password must be at least 6 characters." });
         }
 
+        // Cria a conta de autenticação no Supabase
         const { data, error } = await supabase.auth.signUp({
             email,
             password,
@@ -112,19 +137,22 @@ app.post("/api/register", async (req, res) => {
 
         if (error) return res.status(400).json({ success: false, message: error.message });
 
+        // Cria o perfil do eleitor na tabela voters
         const { error: voterError } = await supabase
             .from("voters")
             .insert({ id: data.user.id, full_name, email, has_voted: false });
 
         if (voterError) console.error("Voter profile error:", voterError);
 
+        // Envia o OTP de verificação (com try/catch porque se o email falhar,
         try {
             const otp = generateOTP();
+
             await supabase.from("pending_otps").insert({
                 email,
                 otp,
                 purpose: "registration",
-                expires_at: new Date(Date.now() + 10 * 60 * 1000).toISOString()
+                expires_at: new Date(Date.now() + 10 * 60 * 1000).toISOString()  // 10 min
             });
 
             const tpl = otpEmailTemplate(otp, "account verification", "Verification Code");
@@ -152,7 +180,9 @@ app.post("/api/register", async (req, res) => {
     }
 });
 
-
+// ==========================================
+// 2. LOGIN DE ELEITOR
+// ==========================================
 app.post("/api/login", async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -161,13 +191,16 @@ app.post("/api/login", async (req, res) => {
             return res.status(400).json({ success: false, message: "Please fill in all fields." });
         }
 
+        // Tenta autenticar no Supabase
         const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
         if (error) {
+            // Se falhar, registamos no audit log (útil para detetar ataques)
             await logAction("LOGIN_FAILED", email, null, { reason: error.message });
             return res.status(401).json({ success: false, message: "Invalid email or password." });
         }
 
+        // Procura o perfil do eleitor
         const { data: voter } = await supabase
             .from("voters")
             .select("*")
@@ -188,8 +221,10 @@ app.post("/api/login", async (req, res) => {
         res.status(500).json({ success: false, message: err.message });
     }
 });
-
-
+// ==========================================
+// 3. ENVIAR OTP (REGISTO)
+// ==========================================
+// Usado para reenviar o código quando o primeiro não chegou.
 app.post("/api/send-otp", async (req, res) => {
     try {
         const { email } = req.body;
@@ -220,8 +255,10 @@ app.post("/api/send-otp", async (req, res) => {
         res.status(500).json({ success: false, message: "Error sending OTP: " + err.message });
     }
 });
-
-
+// ==========================================
+// 4. VERIFICAR OTP (REGISTO)
+// ==========================================
+// Confirma que o código que o utilizador escreveu é igual ao que enviámos.
 app.post("/api/verify-otp", async (req, res) => {
     try {
         const { email, otp } = req.body;
@@ -229,13 +266,14 @@ app.post("/api/verify-otp", async (req, res) => {
             return res.status(400).json({ success: false, message: "Email and OTP are required." });
         }
 
+        // Procura um OTP válido (que ainda não expirou)
         const { data, error } = await supabase
             .from("pending_otps")
             .select("*")
             .eq("email", email)
             .eq("otp", otp.toString())
             .eq("purpose", "registration")
-            .gte("expires_at", new Date().toISOString())
+            .gte("expires_at", new Date().toISOString())       
             .order("created_at", { ascending: false })
             .limit(1);
 
@@ -246,6 +284,7 @@ app.post("/api/verify-otp", async (req, res) => {
             return res.status(400).json({ success: false, message: "Invalid or expired OTP." });
         }
 
+        // OTP correto → apagamos para não poder ser reutilizado
         await supabase.from("pending_otps").delete().eq("id", data[0].id);
         await logAction("OTP_VERIFIED", email, null, { purpose: "registration" });
 
@@ -255,7 +294,9 @@ app.post("/api/verify-otp", async (req, res) => {
         res.status(500).json({ success: false, message: err.message });
     }
 });
-
+// ==========================================
+// 5. LISTAR CANDIDATOS
+// ==========================================
 
 app.get("/api/candidates", async (req, res) => {
     try {
@@ -273,6 +314,9 @@ app.get("/api/candidates", async (req, res) => {
 });
 
 
+// ==========================================
+// 6. LISTAR CANDIDATOS COM VOTOS
+// ==========================================
 app.get("/api/candidates-with-votes", async (req, res) => {
     try {
         const { data: candidates, error: cErr } = await supabase
@@ -282,12 +326,14 @@ app.get("/api/candidates-with-votes", async (req, res) => {
 
         if (cErr) throw cErr;
 
+        // Vai buscar todos os votos
         const { data: votes, error: vErr } = await supabase
             .from("votes")
             .select("candidate_id");
 
         if (vErr) throw vErr;
 
+        // Junta tudo: cada candidato fica com o seu contador
         const result = candidates.map(c => ({
             ...c,
             votes: votes.filter(v => v.candidate_id === c.id).length
@@ -301,6 +347,10 @@ app.get("/api/candidates-with-votes", async (req, res) => {
 });
 
 
+// ==========================================
+// 7. CRIAR CANDIDATO
+// ==========================================
+// Registo simples. A foto chega em Base64 (por isso o limite de 10MB).
 app.post("/api/candidates", async (req, res) => {
     try {
         const { full_name, age, gender, party, position, project, manifesto, email, photo } = req.body;
@@ -325,65 +375,9 @@ app.post("/api/candidates", async (req, res) => {
     }
 });
 
-
-app.put("/api/candidates/:id", async (req, res) => {
-    try {
-        const token = req.headers.authorization?.replace("Bearer ", "");
-
-        if (!token) {
-            return res.status(401).json({ success: false, message: "Token required." });
-        }
-
-        const { data: userData, error: authError } = await supabase.auth.getUser(token);
-        if (authError || !userData.user || userData.user.email !== process.env.ADMIN_EMAIL) {
-            return res.status(403).json({ success: false, message: "Only admins can edit candidates." });
-        }
-
-        const { id } = req.params;
-        const { data, error } = await supabase
-            .from("candidates")
-            .update(req.body)
-            .eq("id", id)
-            .select()
-            .single();
-
-        if (error) throw error;
-
-        await logAction("CANDIDATE_UPDATED", userData.user.email, null, { candidate_id: id });
-
-        res.json({ success: true, message: "Candidate updated!", candidate: data });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-
-app.delete("/api/candidates/:id", async (req, res) => {
-    try {
-        const token = req.headers.authorization?.replace("Bearer ", "");
-
-        if (!token) {
-            return res.status(401).json({ success: false, message: "Token required." });
-        }
-
-        const { data: userData, error: authError } = await supabase.auth.getUser(token);
-        if (authError || !userData.user || userData.user.email !== process.env.ADMIN_EMAIL) {
-            return res.status(403).json({ success: false, message: "Only admins can delete candidates." });
-        }
-
-        const { id } = req.params;
-        const { error } = await supabase.from("candidates").delete().eq("id", id);
-        if (error) throw error;
-
-        await logAction("CANDIDATE_DELETED", userData.user.email, null, { candidate_id: id });
-
-        res.json({ success: true, message: "Candidate removed!" });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-
+// ==========================================
+// 8. VOTAR — PASSO 1: PEDIR OTP
+// ==========================================
 app.post("/api/vote/request-otp", async (req, res) => {
     try {
         const { voter_id, candidate_id } = req.body;
@@ -392,6 +386,7 @@ app.post("/api/vote/request-otp", async (req, res) => {
             return res.status(400).json({ success: false, message: "Missing data." });
         }
 
+        // Primeiro: a eleição está aberta?
         const { data: election } = await supabase
             .from("election_settings")
             .select("status")
@@ -405,6 +400,7 @@ app.post("/api/vote/request-otp", async (req, res) => {
             });
         }
 
+        // Segundo: o eleitor existe e ainda não votou?
         const { data: voter } = await supabase
             .from("voters")
             .select("has_voted, email, full_name")
@@ -419,6 +415,7 @@ app.post("/api/vote/request-otp", async (req, res) => {
             return res.status(400).json({ success: false, message: "You have already voted." });
         }
 
+        // Terceiro: o candidato existe?
         const { data: candidate } = await supabase
             .from("candidates")
             .select("id, full_name")
@@ -429,14 +426,17 @@ app.post("/api/vote/request-otp", async (req, res) => {
             return res.status(404).json({ success: false, message: "Candidate not found." });
         }
 
+        // Tudo bem — gerar e enviar OTP
         const otp = generateOTP();
 
+        // Apaga OTPs antigos de votação deste eleitor (para não haver confusão)
         await supabase
             .from("pending_otps")
             .delete()
             .eq("voter_id", voter_id)
             .eq("purpose", "vote");
 
+        // Guarda o novo OTP (expira em 5 minutos)
         await supabase.from("pending_otps").insert({
             email: voter.email,
             otp,
@@ -446,6 +446,7 @@ app.post("/api/vote/request-otp", async (req, res) => {
             expires_at: new Date(Date.now() + 5 * 60 * 1000).toISOString()
         });
 
+        // Envia o email
         const tpl = otpEmailTemplate(
             otp,
             `vote confirmation for ${candidate.full_name}`,
@@ -479,6 +480,9 @@ app.post("/api/vote/request-otp", async (req, res) => {
 });
 
 
+// ==========================================
+// 9. VOTAR — PASSO 2: CONFIRMAR COM OTP
+// ==========================================
 app.post("/api/vote/confirm", async (req, res) => {
     try {
         const { voter_id, candidate_id, otp } = req.body;
@@ -487,6 +491,7 @@ app.post("/api/vote/confirm", async (req, res) => {
             return res.status(400).json({ success: false, message: "Missing data." });
         }
 
+        // Vai buscar o OTP mais recente deste eleitor
         const { data: otpRecords, error: otpErr } = await supabase
             .from("pending_otps")
             .select("*")
@@ -503,12 +508,14 @@ app.post("/api/vote/confirm", async (req, res) => {
 
         const otpRecord = otpRecords[0];
 
+        // Já expirou?
         if (new Date(otpRecord.expires_at) < new Date()) {
             await supabase.from("pending_otps").delete().eq("id", otpRecord.id);
             await logAction("VOTE_OTP_EXPIRED", null, voter_id);
             return res.status(400).json({ success: false, message: "Code expired. Request a new OTP." });
         }
 
+        // Já tentou demasiadas vezes?
         if (otpRecord.attempts >= 3) {
             await supabase.from("pending_otps").delete().eq("id", otpRecord.id);
             await logAction("VOTE_OTP_BLOCKED", null, voter_id, { reason: "too many attempts" });
@@ -518,6 +525,7 @@ app.post("/api/vote/confirm", async (req, res) => {
             });
         }
 
+        // OTP está errado? Aumenta o contador de tentativas
         if (otpRecord.otp !== otp.toString()) {
             const newAttempts = otpRecord.attempts + 1;
             await supabase
@@ -533,8 +541,10 @@ app.post("/api/vote/confirm", async (req, res) => {
             });
         }
 
+        // OTP correto! Vamos registar o voto
         const confirmationId = generateConfirmationId();
 
+        // Dupla verificação: o eleitor ainda não votou? (evita corrida entre pedidos)
         const { data: voter } = await supabase
             .from("voters")
             .select("has_voted, email")
@@ -545,6 +555,7 @@ app.post("/api/vote/confirm", async (req, res) => {
             return res.status(400).json({ success: false, message: "You have already voted." });
         }
 
+        // Guarda o voto
         const { error: voteErr } = await supabase.from("votes").insert({
             voter_id,
             candidate_id,
@@ -556,13 +567,16 @@ app.post("/api/vote/confirm", async (req, res) => {
             return res.status(500).json({ success: false, message: "Error recording vote." });
         }
 
+        // Marca o eleitor como "já votou"
         await supabase
             .from("voters")
             .update({ has_voted: true })
             .eq("id", voter_id);
 
+        // Apaga o OTP que já foi usado
         await supabase.from("pending_otps").delete().eq("id", otpRecord.id);
 
+        // Vai buscar info do candidato para devolver na resposta
         const { data: candidate } = await supabase
             .from("candidates")
             .select("full_name, party, position")
@@ -590,6 +604,11 @@ app.post("/api/vote/confirm", async (req, res) => {
 });
 
 
+// ==========================================
+// 10. RESULTADOS DA ELEIÇÃO
+// ==========================================
+// Devolve os candidatos ordenados por votos, com as percentagens.
+
 app.get("/api/results", async (req, res) => {
     try {
         const { data: candidates } = await supabase.from("candidates").select("*");
@@ -615,7 +634,7 @@ app.get("/api/results", async (req, res) => {
             success: true,
             totalCandidates: candidates.length,
             totalVotes: totalVotes,
-            leadingCandidate: results[0] || null,
+            leadingCandidate: results[0] || null,        
             results: results
         });
     } catch (err) {
@@ -623,6 +642,9 @@ app.get("/api/results", async (req, res) => {
     }
 });
 
+// ==========================================
+// 11. ESTATÍSTICAS GERAIS
+// ==========================================
 
 app.get("/api/stats", async (req, res) => {
     try {
@@ -635,6 +657,7 @@ app.get("/api/stats", async (req, res) => {
         const { count: totalVotes } = await supabase
             .from("votes").select("*", { count: "exact", head: true });
 
+        // Taxa de participação = votos / eleitores * 100
         const participationRate = totalVoters > 0
             ? ((totalVotes / totalVoters) * 100).toFixed(2) + "%"
             : "0%";
@@ -651,6 +674,11 @@ app.get("/api/stats", async (req, res) => {
     }
 });
 
+
+// ==========================================
+// 12. LOGIN DE ADMIN
+// ==========================================
+// Só passa se o email for igual ao ADMIN_EMAIL do .env.
 
 app.post("/api/admin/login", async (req, res) => {
     try {
@@ -676,6 +704,9 @@ app.post("/api/admin/login", async (req, res) => {
 });
 
 
+// ==========================================
+// 13. AUDIT LOG
+// ==========================================
 app.get("/api/audit-log", async (req, res) => {
     try {
         const { limit = 50 } = req.query;
@@ -694,7 +725,9 @@ app.get("/api/audit-log", async (req, res) => {
     }
 });
 
-
+// ==========================================
+// 14. ESTADO DA ELEIÇÃO
+// ==========================================
 app.get("/api/election/status", async (req, res) => {
     try {
         const { data, error } = await supabase
@@ -719,6 +752,9 @@ app.get("/api/election/status", async (req, res) => {
 });
 
 
+// ==========================================
+// 15. ADMIN — ABRIR/FECHAR ELEIÇÃO
+// ==========================================
 app.post("/api/admin/election/toggle", async (req, res) => {
     try {
         const token = req.headers.authorization?.replace("Bearer ", "");
@@ -728,6 +764,7 @@ app.post("/api/admin/election/toggle", async (req, res) => {
             return res.status(401).json({ success: false, message: "Token required." });
         }
 
+        // Confirma que é o admin
         const { data: userData, error: authError } = await supabase.auth.getUser(token);
 
         if (authError || !userData.user) {
@@ -738,6 +775,7 @@ app.post("/api/admin/election/toggle", async (req, res) => {
             return res.status(403).json({ success: false, message: "Admin access only." });
         }
 
+        // Vê o estado atual para saber qual é o próximo
         const { data: current } = await supabase
             .from("election_settings")
             .select("status")
@@ -752,8 +790,10 @@ app.post("/api/admin/election/toggle", async (req, res) => {
         };
 
         if (newStatus === "closed") {
+            // A fechar → só guarda o momento
             updateData.closed_at = new Date().toISOString();
         } else {
+            // A abrir → precisa de datas válidas
             if (!start_date || !end_date) {
                 return res.status(400).json({
                     success: false,
@@ -797,10 +837,14 @@ app.post("/api/admin/election/toggle", async (req, res) => {
 });
 
 
+// ==========================================
+// 16. VER EM QUEM O ELEITOR VOTOU
+// ==========================================
 app.get("/api/voter/my-vote/:voter_id", async (req, res) => {
     try {
         const { voter_id } = req.params;
 
+        // Procura o voto mais recente deste eleitor
         const { data: votes, error } = await supabase
             .from("votes")
             .select("confirmation_id, voted_at, candidate_id")
@@ -814,6 +858,7 @@ app.get("/api/voter/my-vote/:voter_id", async (req, res) => {
             return res.json({ success: true, has_voted: false, vote: null });
         }
 
+        // Vai buscar info do candidato em quem votou
         const { data: candidate } = await supabase
             .from("candidates")
             .select("id, full_name, party, position, photo")
@@ -835,10 +880,19 @@ app.get("/api/voter/my-vote/:voter_id", async (req, res) => {
 });
 
 
+// ==========================================
+// 404 — NINGUÉM PEDIU ISTO
+// ==========================================
+// Se o pedido não bateu em nenhuma rota acima, respondemos 404.
+
 app.use((req, res) => {
     res.status(404).json({ success: false, message: "Route not found." });
 });
 
+
+// ==========================================
+// ARRANCA O SERVIDOR
+// ==========================================
 
 app.listen(PORT, () => {
     console.log("========================================");
@@ -858,8 +912,6 @@ app.listen(PORT, () => {
     console.log("   GET    /api/candidates");
     console.log("   GET    /api/candidates-with-votes");
     console.log("   POST   /api/candidates");
-    console.log("   PUT    /api/candidates/:id");
-    console.log("   DELETE /api/candidates/:id");
     console.log("   POST   /api/vote/request-otp");
     console.log("   POST   /api/vote/confirm");
     console.log("   GET    /api/results");
