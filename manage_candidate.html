@@ -5,17 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Candidates — Online Voting System</title>
     <link rel="stylesheet" href="manage_candidate.css">
-    
 </head>
 <body>
 
     <nav>
         <div class="logo">Online Voting System</div>
         <div class="nav-links">
-            <a href="home.html">Home</a>
+            <a href="index.html">Home</a>
             <a href="candidate.html">Candidate</a>
             <a href="cast_vote.html">Make a Vote</a>
             <a href="dashboard.html">Dashboard</a>
+            <a href="manage_candidate.html" class="active">Candidates</a>
         </div>
     </nav>
 
@@ -34,48 +34,12 @@
                 <th>Email</th>
                 <th>Votes</th>
                 <th>Photos</th>
-                <th>Actions</th>
             </tr>
         </thead>
         <tbody id="candidatesTableBody">
-            <tr><td colspan="9" style="text-align:center;padding:40px;">Loading...</td></tr>
+            <tr><td colspan="8" style="text-align:center;padding:40px;">Loading...</td></tr>
         </tbody>
     </table>
-
-
-    <div id="adminModal" class="admin-modal-overlay">
-        <div class="admin-modal">
-            <div class="admin-modal-icon">🔒</div>
-            <h2>Restricted Access</h2>
-            <p>
-                Only administrators can <strong id="adminActionLabel">edit/delete</strong> candidates.<br>
-                Please login to continue.
-            </p>
-
-            <div id="adminModalError" class="admin-modal-error"></div>
-
-            <form id="adminLoginForm">
-                <div class="form-group">
-                    <label for="adminModalEmail">Admin Email</label>
-                    <input type="email" id="adminModalEmail" placeholder="admin@email.com" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="adminModalPassword">Password</label>
-                    <input type="password" id="adminModalPassword" placeholder="Enter your password" required>
-                </div>
-
-                <div class="admin-modal-buttons">
-                    <button type="button" class="btn-modal-cancel" onclick="closeAdminModal()">
-                        Cancel
-                    </button>
-                    <button type="submit" class="btn-modal-login" id="adminModalLoginBtn">
-                        Login as Admin
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
 
     <script type="module" src="manage_candidate.js"></script>
 
