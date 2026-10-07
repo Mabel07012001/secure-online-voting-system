@@ -5,32 +5,18 @@ import {
     apiGetElectionStatus
 } from "./api.js";
 
+import { requireLogin, logout } from "./auth-guard.js";
+
+// ============================================================
+// AUTENTICAÇÃO
+// ============================================================
+const voter = requireLogin();
+if (!voter) {
+    // requireLogin já redirecionou para login.html
+    throw new Error("Not authenticated");
+}
+
 async function loadDashboard() {
-    const voterData = localStorage.getItem("loggedInVoter");
-
-    if (!voterData) {
-        alert("Please login first.");
-        window.location.href = "login.html";
-        return;
-    }
-
-    let voter;
-    try {
-        voter = JSON.parse(voterData);
-    } catch (e) {
-        console.error("Error reading localStorage:", e);
-        localStorage.removeItem("loggedInVoter");
-        window.location.href = "login.html";
-        return;
-    }
-
-    if (!voter || !voter.full_name) {
-        alert("Invalid session. Please login again.");
-        localStorage.removeItem("loggedInVoter");
-        window.location.href = "login.html";
-        return;
-    }
-
     console.log("Voter:", voter);
 
     const voterName = document.getElementById("voterName");
@@ -163,13 +149,13 @@ async function loadDashboard() {
     }
 }
 
-async function logout() {
-    localStorage.removeItem("loggedInVoter");
-    localStorage.removeItem("authToken");
-    window.location.href = "login.html";
-}
-
+// ============================================================
+// LOGOUT
+// ============================================================
 const logoutButton = document.getElementById("logoutButton");
 if (logoutButton) logoutButton.addEventListener("click", logout);
 
+// ============================================================
+// ARRANCA
+// ============================================================
 loadDashboard();
