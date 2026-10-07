@@ -1,4 +1,18 @@
-import { apiGetCandidates, apiRequestVoteOTP, apiConfirmVote } from "./api.js";
+import {
+    apiGetCandidates,
+    apiRequestVoteOTP,
+    apiVerifyVoteOTP,      // 🆕
+    apiVerifyVoteFace,     // 🆕
+    apiConfirmVote
+} from "./api.js";
+
+import {
+    loadFaceModels,
+    startCamera,
+    stopCamera,
+    detectFaceDescriptor,
+    startFacePreview
+} from "./face-verification.js";
 
 const candidatesContainer = document.getElementById("candidatesContainer");
 const voteMessage = document.getElementById("voteMessage");
@@ -7,6 +21,42 @@ let selectedCandidateId = null;
 let selectedCandidateData = null;
 let currentUser = null;
 
+// 🆕 Estado da votação
+let pendingVoteOTP = null;         
+let faceDescriptor = null;         
+let stopPreviewLoop = null;        
+let modelsReady = false;           
+let faceCameraStarted = false;   
+
+// 🆕 Elementos do modal de face
+const faceModal        = document.getElementById("faceModal");
+const faceCameraWrap   = document.getElementById("faceCameraWrap");
+const faceVideo        = document.getElementById("faceVideo");
+const faceCanvas       = document.getElementById("faceCanvas");
+const faceStartBtn     = document.getElementById("faceStartBtn");
+const faceCaptureBtn   = document.getElementById("faceCaptureBtn");
+const faceStatus       = document.getElementById("faceStatus");
+const faceContinueBtn  = document.getElementById("faceContinueBtn");
+const faceHint         = document.getElementById("faceHint");
+
+
+// ============================================================
+// HELPERS DE UI DO MODAL DE FACE
+// ============================================================
+function setFaceStatus(msg, type = "info") {
+    faceStatus.textContent = msg;
+    faceStatus.className = "face-modal-status show " + type;
+}
+
+function clearFaceStatus() {
+    faceStatus.className = "face-modal-status";
+    faceStatus.textContent = "";
+}
+
+
+// ============================================================
+// CARREGAR USER (mantido)
+// ============================================================
 function loadUser() {
     const voterData = localStorage.getItem("loggedInVoter");
 
@@ -52,8 +102,23 @@ function loadUser() {
     }
 
     loadCandidates();
+
+    // 🆕 Pré-carrega os modelos de face em background
+    (async () => {
+        try {
+            await loadFaceModels();
+            modelsReady = true;
+            console.log("Face models loaded and ready.");
+        } catch (err) {
+            console.error("Failed to load face models:", err);
+        }
+    })();
 }
 
+
+// ============================================================
+// CARREGAR CANDIDATOS (mantido)
+// ============================================================
 async function loadCandidates() {
     try {
         const result = await apiGetCandidates();
@@ -93,6 +158,10 @@ async function loadCandidates() {
     }
 }
 
+
+// ============================================================
+// SELECIONAR CANDIDATO (mantido)
+// ============================================================
 function selectCandidate(candidate, selectedCard) {
     selectedCandidateId = candidate.id;
     selectedCandidateData = candidate;
@@ -126,6 +195,10 @@ function closeConfirmModal() {
 
 window.closeConfirmModal = closeConfirmModal;
 
+
+// ============================================================
+// PROCEED TO OTP (mantido)
+// ============================================================
 async function proceedToOTP() {
     const confirmBtn = document.getElementById("confirmBtn");
     confirmBtn.disabled = true;
@@ -167,6 +240,10 @@ function closeOTPModal() {
 
 window.closeOTPModal = closeOTPModal;
 
+
+// ============================================================
+// SUBMIT OTP — AGORA SÓ VALIDA (não vota)
+// ============================================================
 async function submitOTP() {
     const otp = document.getElementById("voteOtpInput").value.trim();
     const errorEl = document.getElementById("otpError");
@@ -186,43 +263,47 @@ async function submitOTP() {
     submitBtn.textContent = "Verifying...";
 
     try {
-        const result = await apiConfirmVote(currentUser.id, selectedCandidateId, otp);
+        // 🆕 Passo 1: validar OTP (NÃO vota ainda)
+        const result = await apiVerifyVoteOTP(currentUser.id, otp);
 
         if (!result.success) {
             errorEl.textContent = result.message || "Invalid OTP.";
             errorEl.classList.add("show");
             submitBtn.disabled = false;
-            submitBtn.textContent = "Confirm Vote";
+            submitBtn.textContent = "Confirmar Voto";
             return;
         }
 
-        successEl.textContent = "✅ Vote recorded!";
+        // OTP válido → guarda para usar no passo final
+        pendingVoteOTP = otp;
+
+        successEl.textContent = "✅ Código correto! Prosseguindo para verificação facial...";
         successEl.classList.add("show");
 
-        sessionStorage.setItem("voteConfirmation", JSON.stringify({
-            confirmation_id: result.confirmation_id,
-            candidate: result.candidate,
-            voted_at: result.voted_at
-        }));
-
-        currentUser.has_voted = true;
-        localStorage.setItem("loggedInVoter", JSON.stringify(currentUser));
-
+        // Fecha o modal de OTP e abre o de face (após pequeno delay para UX)
         setTimeout(() => {
-            window.location.href = "vote_confirmation.html";
-        }, 800);
+            closeOTPModal();
+            openFaceModal();
+        }, 700);
+
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Confirmar Voto";
 
     } catch (error) {
         console.error("Error:", error);
         errorEl.textContent = "Error connecting to server.";
         errorEl.classList.add("show");
         submitBtn.disabled = false;
-        submitBtn.textContent = "Confirm Vote";
+        submitBtn.textContent = "Confirmar Voto";
     }
 }
 
 window.submitOTP = submitOTP;
 
+
+// ============================================================
+// RESEND OTP (mantido)
+// ============================================================
 async function resendOTP(event) {
     event.preventDefault();
 
@@ -242,4 +323,195 @@ async function resendOTP(event) {
 
 window.resendOTP = resendOTP;
 
+
+// ============================================================
+// FACE VERIFICATION — MODAL (NOVO)
+// ============================================================
+
+// Abrir o modal de face
+async function openFaceModal() {
+    // Reset estado
+    faceDescriptor = null;
+    faceCameraStarted = false;
+    faceContinueBtn.disabled = true;
+    faceCaptureBtn.disabled = true;
+    faceStartBtn.disabled = false;
+    faceStartBtn.textContent = "Start Camera";
+    faceCameraWrap.classList.remove("active");
+    clearFaceStatus();
+
+    faceModal.classList.add("active");
+
+    // Se os modelos ainda não carregaram, avisa
+    if (!modelsReady) {
+        setFaceStatus("A carregar modelos de deteção facial...", "info");
+        try {
+            await loadFaceModels();
+            modelsReady = true;
+            setFaceStatus("Modelos prontos. Clique em 'Start Camera'.", "info");
+        } catch (err) {
+            setFaceStatus("Não foi possível carregar os modelos. Verifique a sua ligação.", "error");
+        }
+    } else {
+        setFaceStatus("Clique em 'Start Camera' para iniciar a verificação facial.", "info");
+    }
+}
+
+// Fechar o modal
+function closeFaceModal() {
+    // Desliga tudo
+    if (stopPreviewLoop) { stopPreviewLoop(); stopPreviewLoop = null; }
+    stopCamera();
+    faceCameraWrap.classList.remove("active");
+    faceModal.classList.remove("active");
+    clearFaceStatus();
+}
+
+window.closeFaceModal = closeFaceModal;
+
+// Botão Start Camera
+faceStartBtn.addEventListener("click", async () => {
+    if (!modelsReady) {
+        setFaceStatus("Modelos ainda a carregar. Aguarde um momento...", "error");
+        return;
+    }
+
+    faceStartBtn.disabled = true;
+    setFaceStatus("A solicitar permissão da câmara...", "info");
+
+    try {
+        await startCamera(faceVideo);
+        faceCameraWrap.classList.add("active");
+        stopPreviewLoop = startFacePreview(faceVideo, faceCanvas);
+        faceCameraStarted = true;
+
+        faceCaptureBtn.disabled = false;
+        faceStartBtn.textContent = "Camera On";
+        setFaceStatus("Câmara ativa. Posicione o rosto dentro do enquadramento.", "info");
+    } catch (err) {
+        console.error("Camera error:", err);
+        faceStartBtn.disabled = false;
+        setFaceStatus("Camera permission is required.", "error");
+    }
+});
+
+// Botão Capture Face
+faceCaptureBtn.addEventListener("click", async () => {
+    faceCaptureBtn.disabled = true;
+    setFaceStatus("A analisar o seu rosto...", "info");
+
+    try {
+        const result = await detectFaceDescriptor(faceVideo);
+
+        if (!result.success) {
+            setFaceStatus(result.message, "error");
+            faceCaptureBtn.disabled = false;
+            return;
+        }
+
+        // Extrair descriptor
+        const descriptor = result.descriptor;
+
+        // Enviar ao backend para comparação
+        setFaceStatus("A comparar com o rosto registado...", "info");
+
+        const verify = await apiVerifyVoteFace(currentUser.id, descriptor);
+
+        if (!verify.success) {
+            // Falhou a verificação facial
+            setFaceStatus(
+                "❌ Face verification failed. Please try again." +
+                (verify.distance ? ` (distância: ${verify.distance})` : ""),
+                "error"
+            );
+            faceCaptureBtn.disabled = false;
+            return;
+        }
+
+        // ✅ Face verificada
+        faceDescriptor = descriptor;
+        setFaceStatus("✅ Face verification successful. Pode confirmar o voto.", "success");
+
+        // Atualizar botões
+        faceCaptureBtn.disabled = true;
+        faceStartBtn.disabled = true;
+        faceContinueBtn.disabled = false;
+
+        // Desligar câmera
+        if (stopPreviewLoop) { stopPreviewLoop(); stopPreviewLoop = null; }
+        stopCamera();
+        faceCameraWrap.classList.remove("active");
+
+        faceHint.textContent = "✅ Verificação concluída. Clique em 'Confirmar Voto'.";
+
+    } catch (err) {
+        console.error("Face capture error:", err);
+        setFaceStatus("Não foi possível processar a imagem. Tente novamente.", "error");
+        faceCaptureBtn.disabled = false;
+    }
+});
+
+// Botão final: Confirmar Voto (após OTP + Face)
+async function confirmVoteAfterFace() {
+    if (!pendingVoteOTP) {
+        setFaceStatus("Erro: OTP em falta. Recomece o processo.", "error");
+        return;
+    }
+
+    if (!faceDescriptor) {
+        setFaceStatus("Erro: face não verificada. Capture o rosto primeiro.", "error");
+        return;
+    }
+
+    faceContinueBtn.disabled = true;
+    faceContinueBtn.textContent = "A registar voto...";
+    setFaceStatus("A registar o seu voto no servidor...", "info");
+
+    try {
+        const result = await apiConfirmVote(
+            currentUser.id,
+            selectedCandidateId,
+            pendingVoteOTP
+        );
+
+        if (!result.success) {
+            setFaceStatus("Erro ao registar voto: " + result.message, "error");
+            faceContinueBtn.disabled = false;
+            faceContinueBtn.textContent = "Confirmar Voto →";
+            return;
+        }
+
+        // ✅ VOTO REGISTADO
+        setFaceStatus("✅ Voto registado com sucesso!", "success");
+
+        // Guarda a confirmação (mesmo padrão do código antigo)
+        sessionStorage.setItem("voteConfirmation", JSON.stringify({
+            confirmation_id: result.confirmation_id,
+            candidate: result.candidate,
+            voted_at: result.voted_at
+        }));
+
+        // Atualiza o estado do votante
+        currentUser.has_voted = true;
+        localStorage.setItem("loggedInVoter", JSON.stringify(currentUser));
+
+        // Redireciona
+        setTimeout(() => {
+            window.location.href = "vote_confirmation.html";
+        }, 900);
+
+    } catch (err) {
+        console.error("Confirm vote error:", err);
+        setFaceStatus("Erro de ligação ao servidor.", "error");
+        faceContinueBtn.disabled = false;
+        faceContinueBtn.textContent = "Confirmar Voto →";
+    }
+}
+
+window.confirmVoteAfterFace = confirmVoteAfterFace;
+
+
+// ============================================================
+// ARRANCA
+// ============================================================
 loadUser();

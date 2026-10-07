@@ -6,10 +6,9 @@
     <title>Cast Vote — Online Voting System</title>
     
     <link rel="stylesheet" href="cast_vote.css">
-    <style>
-        /* MODAL */
-        
-    </style>
+
+    <!-- face-api.js servido pelo backend local (offline) -->
+<script src="http://localhost:1977/face-api/face-api.min.js"></script>
 </head>
 
 <body>
@@ -41,7 +40,7 @@
 
 
     <!-- ═══════════════════════════════════════ -->
-    <!-- MODAL 1: CONFIRMAÇÃO DO CANDIDATO       -->
+    <!-- MODAL 1: CANDIDATE CONFIRMATION         -->
     <!-- ═══════════════════════════════════════ -->
     <div id="confirmModal" class="modal-overlay">
         <div class="modal">
@@ -49,11 +48,11 @@
             <p>Are you sure you want to vote for this candidate?</p>
 
             <div class="modal-candidate" id="confirmCandidateInfo">
-                <!-- preenchido pelo JS -->
+                <!-- filled by JS -->
             </div>
 
             <p style="font-size: 13px; color: #dc2626;">
-                ⚠️ Esta ação não pode ser desfeita.
+                ⚠️ This action cannot be undone.
             </p>
 
             <div class="modal-buttons">
@@ -67,36 +66,75 @@
 
 
     <!-- ═══════════════════════════════════════ -->
-    <!-- MODAL 2: INPUT DE OTP                   -->
+    <!-- MODAL 2: OTP INPUT                      -->
     <!-- ═══════════════════════════════════════ -->
     <div id="otpModal" class="modal-overlay">
         <div class="modal">
-            <h2>🔐 Verificação OTP</h2>
-            <p>Enviámos um código de 6 dígitos para o seu email.</p>
+            <h2>🔐 OTP Verification</h2>
+            <p>We sent a 6-digit code to your email.</p>
 
             <input type="text" id="voteOtpInput" class="modal-otp-input"
                    placeholder="000000" maxlength="6" inputmode="numeric">
 
             <div class="modal-info">
-                ⏱️ O código expira em <strong>5 minutos</strong><br>
-                ⚠️ Máximo de <strong>3 tentativas</strong>
+                ⏱️ The code expires in <strong>5 minutes</strong><br>
+                ⚠️ Maximum of <strong>3 attempts</strong>
             </div>
 
             <div id="otpError" class="modal-error"></div>
             <div id="otpSuccess" class="modal-success"></div>
 
             <div class="modal-buttons">
-                <button class="btn-cancel" onclick="closeOTPModal()">Cancelar</button>
+                <button class="btn-cancel" onclick="closeOTPModal()">Cancel</button>
                 <button class="btn-confirm" onclick="submitOTP()" id="otpSubmitBtn">
-                    Confirmar Voto
+                    Confirm Vote
                 </button>
             </div>
 
             <a href="#" class="resend-link" onclick="resendOTP(event)">
-                📩 Reenviar código
+                📩 Resend code
             </a>
         </div>
     </div>
+
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- MODAL 3: FACE VERIFICATION (NEW)        -->
+    <!-- ═══════════════════════════════════════ -->
+    <div id="faceModal" class="modal-overlay">
+        <div class="modal">
+            <h2>🔒 Face Verification</h2>
+            <p>To confirm your vote, we need to verify your identity with a face capture.</p>
+
+            <div class="face-modal-camera" id="faceCameraWrap">
+                <video id="faceVideo" autoplay muted playsinline></video>
+                <canvas id="faceCanvas"></canvas>
+            </div>
+
+            <div class="face-modal-buttons-row">
+                <button type="button" id="faceStartBtn" class="face-btn-secondary">
+                    Start Camera
+                </button>
+                <button type="button" id="faceCaptureBtn" class="face-btn-primary" disabled>
+                    Capture Face
+                </button>
+            </div>
+
+            <div class="face-modal-status" id="faceStatus"></div>
+
+            <div class="face-step-hint" id="faceHint">
+                Step 1: start the camera · Step 2: capture your face · Step 3: confirm the vote
+            </div>
+
+            <div class="modal-buttons" style="margin-top: 20px;">
+                <button class="btn-cancel" onclick="closeFaceModal()">Cancel</button>
+                <button class="btn-confirm" id="faceContinueBtn" onclick="confirmVoteAfterFace()" disabled>
+                    Confirm Vote →
+                </button>
+            </div>
+        </div>
+    </div>
+
 
     <script type="module" src="cast_vote.js"></script>
 

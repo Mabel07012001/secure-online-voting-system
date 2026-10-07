@@ -168,3 +168,59 @@ export async function apiDeleteCandidateAdmin(id, token) {
     });
     return await res.json();
 }
+
+
+
+// ============================================================
+// FACE VERIFICATION APIs
+// ============================================================
+
+/**
+ * Salva o descriptor facial do votante recém-cadastrado.
+ * Chamada uma única vez, logo após /api/register.
+ *
+ * @param {string} voter_id   - ID retornado por apiRegister()
+ * @param {number[]} descriptor - Vetor de 128 números gerado por face-api.js
+ */
+export async function apiRegisterFace(voter_id, descriptor) {
+    const res = await fetch(`${API_URL}/api/register/face`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ voter_id, descriptor })
+    });
+    return await res.json();
+}
+
+/**
+ * 🆕 PASSO INTERMÉDIO: valida o OTP do voto mas NÃO registra o voto.
+ * Marca otp_verified=true no servidor. Deve ser seguido de
+ * apiVerifyVoteFace() e só depois apiConfirmVote().
+ *
+ * @param {string} voter_id - ID do votante
+ * @param {string} otp      - Código de 6 dígitos
+ */
+export async function apiVerifyVoteOTP(voter_id, otp) {
+    const res = await fetch(`${API_URL}/api/vote/verify-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ voter_id, otp })
+    });
+    return await res.json();
+}
+
+/**
+ * Verifica a face atual do votante contra a face cadastrada no registro.
+ * Só funciona se o OTP já foi validado (apiVerifyVoteOTP).
+ *
+ * @param {string} voter_id   - ID do votante
+ * @param {number[]} descriptor - Vetor de 128 números do rosto atual
+ */
+export async function apiVerifyVoteFace(voter_id, descriptor) {
+    const res = await fetch(`${API_URL}/api/vote/verify-face`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ voter_id, descriptor })
+    });
+    return await res.json();
+}
+
