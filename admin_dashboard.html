@@ -1,4 +1,4 @@
-]<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -14,6 +14,7 @@
         <div class="nav-links">
             <a href="admin_dashboard.html" class="active">Dashboard</a>
             <a href="manage_candidate.html">Candidates</a>
+            <a href="manage_voters.html">Voters</a>
             <a href="result.html">Results</a>
             <a href="register.html">Register</a>
             <a href="#" onclick="logoutAdmin(); return false;">Logout</a>
@@ -136,14 +137,14 @@
 
             <div class="card" style="text-align: center;">
                 <div style="font-size: 40px; margin-bottom: 15px;">👥</div>
-                <h3 class="card-title">Voter Registration</h3>
+                <h3 class="card-title">Manage Voters</h3>
                 <p class="card-subtitle" style="margin-bottom: 20px;">
-                    Register new voters in the system
+                    View all registered voters and their status
                 </p>
 
-                <button onclick="openRegistration()" class="btn" style="width: 100%;">
-                    Register Voter
-                </button>
+                <a href="manage_voters.html" class="btn" style="width: 100%; display: inline-block; text-decoration: none; text-align: center; box-sizing: border-box;">
+                    Manage Voters
+                </a>
             </div>
 
             <div class="card" style="text-align: center;">

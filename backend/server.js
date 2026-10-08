@@ -22,6 +22,7 @@ const PORT = process.env.PORT || 1977;
 app.use(cors());                                  
 app.use(express.json({ limit: "10mb" }));         
 app.use(express.static("public"));
+app.use(express.static("../"));
 
 // ==========================================
 // LIGAÇÃO AO SUPABASE
@@ -1082,6 +1083,38 @@ app.get("/api/voter/my-vote/:voter_id", async (req, res) => {
             }
         });
     } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+// ==========================================
+// 17. ADMIN — LISTAR VOTANTES
+// ==========================================
+app.get("/api/admin/voters", async (req, res) => {
+    try {
+        const token = req.headers.authorization?.replace("Bearer ", "");
+
+        if (!token) {
+            return res.status(401).json({ success: false, message: "Token required." });
+        }
+
+        const { data: userData, error: authError } = await supabase.auth.getUser(token);
+
+        if (authError || !userData.user || userData.user.email !== process.env.ADMIN_EMAIL) {
+            return res.status(403).json({ success: false, message: "Admin access only." });
+        }
+
+        const { data, error } = await supabase
+            .from("voters")
+            .select("id, full_name, email, has_voted, face_registered, created_at")
+            .order("created_at", { ascending: false });
+
+        if (error) throw error;
+
+        await logAction("ADMIN_VIEWED_VOTERS", userData.user.email);
+
+        res.json({ success: true, total: data.length, voters: data });
+    } catch (err) {
+        console.error("admin/voters error:", err);
         res.status(500).json({ success: false, message: err.message });
     }
 });

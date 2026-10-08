@@ -223,4 +223,13 @@ export async function apiVerifyVoteFace(voter_id, descriptor) {
     });
     return await res.json();
 }
-
+/**
+ * Lista todos os votantes registados (apenas admin).
+ * NOTA: o backend exclui o face_descriptor e passwords da resposta.
+ */
+export async function apiGetAllVoters(token) {
+    const res = await fetch(`${API_URL}/api/admin/voters`, {
+        headers: { "Authorization": `Bearer ${token}` }
+    });
+    return await res.json();
+}

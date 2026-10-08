@@ -1,0 +1,244 @@
+/* =====================================================
+   MANAGE VOTERS — Professional Admin Table
+===================================================== */
+
+.voters-main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+}
+
+/* ========== FILTROS ========== */
+.filters-bar {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+    align-items: center;
+}
+
+.filter-search {
+    flex: 1;
+    min-width: 260px;
+    position: relative;
+}
+
+.filter-search .search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 15px;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.filter-search input {
+    width: 100%;
+    padding: 13px 16px 13px 44px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    background: #fff;
+    transition: all 0.25s ease;
+}
+
+.filter-search input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+.filter-tabs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    background: #f1f5f9;
+    padding: 6px;
+    border-radius: 12px;
+}
+
+.filter-tab {
+    padding: 8px 16px;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s ease;
+}
+
+.filter-tab:hover {
+    color: #1e293b;
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.filter-tab.active {
+    background: #2563eb;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+/* ========== CONTADORES ========== */
+.summary-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 14px;
+    margin-bottom: 28px;
+}
+
+.summary-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 18px 20px;
+    text-align: left;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05);
+}
+
+.summary-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: #64748b;
+    margin-bottom: 6px;
+}
+
+.summary-value {
+    font-size: 26px;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1;
+}
+
+.summary-value.success { color: #16a34a; }
+.summary-value.warning { color: #f59e0b; }
+.summary-value.primary { color: #2563eb; }
+
+/* ========== TABELA ========== */
+.table-card {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
+    border: 1px solid #e2e8f0;
+}
+
+.voters-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.voters-table thead {
+    background: #f8fafc;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.voters-table th {
+    padding: 16px 20px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #64748b;
+    white-space: nowrap;
+}
+
+.voters-table td {
+    padding: 16px 20px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #334155;
+    vertical-align: middle;
+}
+
+.voters-table tbody tr {
+    transition: background 0.15s ease;
+}
+
+.voters-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+.voters-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.empty-message {
+    text-align: center;
+    padding: 60px 20px !important;
+    color: #94a3b8;
+    font-style: italic;
+}
+
+/* ========== BADGES ========== */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.badge-yes {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.badge-no {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+.badge-warning {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+/* ========== NOTA DE PRIVACIDADE ========== */
+.privacy-note {
+    margin-top: 24px;
+    padding: 16px 20px;
+    background: #eff6ff;
+    border-left: 4px solid #2563eb;
+    border-radius: 10px;
+    font-size: 13px;
+    color: #1e40af;
+    line-height: 1.6;
+}
+
+.privacy-note strong {
+    color: #1e3a8a;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 720px) {
+    .voters-table th,
+    .voters-table td {
+        padding: 12px 12px;
+        font-size: 13px;
+    }
+
+    .filter-tabs {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .filter-tab {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+
+    .summary-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Voters — Admin</title>
+    <link rel="stylesheet" href="global.css">
+    <link rel="stylesheet" href="manage_voters.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">Online Voting System</div>
+        <div class="nav-links">
+            <a href="admin_dashboard.html">Dashboard</a>
+            <a href="manage_candidate.html">Candidates</a>
+            <a href="manage_voters.html" class="active">Voters</a>
+            <a href="result.html">Results</a>
+            <a href="#" onclick="logoutAdmin(); return false;">Logout</a>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1 class="page-title">Manage Voters</h1>
+        <p class="page-subtitle">View and monitor all registered voters</p>
+    </div>
+
+    <main class="voters-main">
+
+        <div class="filters-bar">
+            <div class="filter-search">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="Search by name or email...">
+            </div>
+
+            <div class="filter-tabs">
+                <button class="filter-tab active" data-filter="all">All</button>
+                <button class="filter-tab" data-filter="voted">Voted</button>
+                <button class="filter-tab" data-filter="not_voted">Not Voted</button>
+                <button class="filter-tab" data-filter="face_ok">Face Registered</button>
+                <button class="filter-tab" data-filter="face_missing">No Face</button>
+            </div>
+        </div>
+
+        <div class="summary-row">
+            <div class="summary-card">
+                <div class="summary-label">Total</div>
+                <div class="summary-value" id="countTotal">0</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-label">Voted</div>
+                <div class="summary-value success" id="countVoted">0</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-label">Not Voted</div>
+                <div class="summary-value warning" id="countNotVoted">0</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-label">Face Registered</div>
+                <div class="summary-value primary" id="countFaceOk">0</div>
+            </div>
+        </div>
+
+        <div class="table-card">
+            <table class="voters-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Full Name</th>
+                        <th>Email</th>
+                        <th>Registered</th>
+                        <th>Face</th>
+                        <th>Voted</th>
+                    </tr>
+                </thead>
+                <tbody id="votersTableBody">
+                    <tr>
+                        <td colspan="6" class="empty-message">Loading voters...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="privacy-note">
+            <strong>🔒 Privacy notice:</strong>
+            This view shows only voter metadata (name, email, registration date, status).
+            The candidate each voter chose is <strong>never displayed</strong>, preserving ballot secrecy.
+        </div>
+
+    </main>
+
+    <script type="module" src="manage_voters.js"></script>
+</body>
+</html>
