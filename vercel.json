@@ -1,5 +1,5 @@
 {
   "outputDirectory": ".",
   "buildCommand": "echo 'Nenhum build necessário'",
-  "devCommand": "echo 'Nenhum comando de dev necessário'"
+  "cleanUrls": true
 }
